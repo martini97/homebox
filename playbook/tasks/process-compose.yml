@@ -1,0 +1,14 @@
+---
+- name: process-compose | enable f1bonacc1 tap
+  community.general.homebrew_tap:
+    name:
+      - f1bonacc1/tap
+    state: present
+  tags: ['process-compose']
+
+- name: process-compose | install package
+  community.general.homebrew:
+    name:
+      - f1bonacc1/tap/process-compose
+    state: present
+  tags: ['process-compose']

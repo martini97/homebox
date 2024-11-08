@@ -1,0 +1,67 @@
+---
+- name: neovim | enable nightly copr
+  become: true
+  become_user: root
+  community.general.copr:
+    state: enabled
+    name: agriffis/neovim-nightly
+  tags: ['neovim']
+
+- name: neovim | install system packages
+  become: true
+  become_user: root
+  ansible.builtin.dnf5:
+    state: present
+    name:
+      - readline-devel
+      - gobject-introspection-devel
+      - ShellCheck
+      - bat
+      - black
+      - fd-find
+      - fswatch
+      - fzf
+      - jq
+      - luajit
+      - neovim
+      - nodejs-bash-language-server
+      - ripgrep
+      - shfmt
+      - yamllint
+      - ansible-lint
+  tags: ['neovim']
+
+- name: neovim | install hererocks
+  ansible.builtin.pip:
+    name: hererocks
+    extra_args: --user
+  tags: ['neovim']
+
+- name: neovim | install homebrew packages
+  community.general.homebrew:
+    name:
+      - lua-language-server
+      - gobject-introspection
+    state: present
+  tags: ['neovim']
+
+- name: neovim | install npm packages
+  community.general.npm:
+    name: "{{ item }}"
+    global: true
+    state: present
+  loop:
+    - "@fsouza/prettierd"
+    - "eslint_d"
+    - "@vue/language-server"
+    - "@vtsls/language-server"
+    - "vscode-langservers-extracted"
+    - "pyright"
+  tags: ['neovim']
+
+- name: neovim | install cargo packages
+  community.general.cargo:
+    name:
+      - selene
+      - stylua
+  tags: ['neovim']

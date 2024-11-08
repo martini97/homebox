@@ -1,0 +1,25 @@
+git:
+  skipHookPrefix: WIP
+  mainBranches:
+    - master
+    - main
+    - staging
+
+customCommands:
+  - key: 'F'
+    command: 'git pull --autostash --rebase {{ .Form.Remote }} {{ .Form.Branch }}'
+    context: 'localBranches'
+    stream: true
+    prompts:
+      - type: 'input'
+        title: 'Remote:'
+        key: 'Remote'
+        suggestions:
+          preset: 'remotes'
+      - type: 'input'
+        key: 'Branch'
+        title: "Branch:"
+        suggestions:
+          command: |
+            git branch --remote --list '{{.Form.Remote}}/*' --format='%(refname:short)' |
+              sed --regexp-extended --expression 's@{{.Form.Remote}}/?@@g' --expression '/^$/d'

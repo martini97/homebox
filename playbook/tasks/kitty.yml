@@ -1,0 +1,11 @@
+---
+- name: kitty | install system packages
+  become: true
+  become_user: root
+  ansible.builtin.dnf5:
+    state: present
+    name:
+      - kitty
+      - kitty-terminfo
+      - kitty-doc
+  tags: ['kitty']

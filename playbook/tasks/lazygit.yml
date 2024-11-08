@@ -1,0 +1,16 @@
+---
+- name: lazygit | enable coprs
+  become: true
+  become_user: root
+  community.general.copr:
+    state: enabled
+    name: atim/lazygit
+  tags: ['lazygit']
+
+- name: lazygit | install system packages
+  become: true
+  become_user: root
+  ansible.builtin.dnf5:
+    name: lazygit
+    state: present
+  tags: ['lazygit']

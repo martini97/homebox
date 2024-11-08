@@ -1,0 +1,40 @@
+[user]
+  name = Alessandro Martini
+  email = martini97@protonmail.ch
+  username = martini
+
+[alias]
+  st = status
+  ll = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+
+[core]
+  editor = nvim
+  excludesfile = ~/.config/git/ignore
+
+[init]
+  defaultBranch = "main"
+
+[pull]
+  rebase = true
+
+[push]
+  default = current
+
+[rebase]
+  instructionFormat = (%an <%ae>) %s
+
+[merge]
+  tool = "nvimdiff"
+
+[mergetool]
+  prompt = false
+
+[commit]
+  verbose = true
+  gpgsign = true
+
+[includeIf "hasconfig:remote.*.url:https://github.com:**/**"]
+  path = config.github
+
+[includeIf "hasconfig:remote.*.url:git@github.com:**/**"]
+  path = config.github

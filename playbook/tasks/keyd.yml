@@ -1,0 +1,52 @@
+---
+- name: keyd | enable coprs
+  become: true
+  become_user: root
+  community.general.copr:
+    state: enabled
+    name: alternateved/keyd
+  tags: ['keyd']
+
+- name: keyd | install system packages
+  become: true
+  become_user: root
+  ansible.builtin.dnf5:
+    name: keyd
+    state: present
+  tags: ['keyd']
+
+- name: keyd | enable service
+  become: true
+  become_user: root
+  ansible.builtin.systemd_service:
+    enabled: true
+    state: started
+    name: keyd.service
+  tags: ['keyd']
+
+- name: keyd | add user to group
+  become: true
+  become_user: root
+  ansible.builtin.user:
+    append: true
+    groups: keyd
+    name: "{{ ansible_env['USER'] }}"
+  tags: ['keyd']
+
+- name: keyd | create conf dir
+  become: true
+  become_user: root
+  ansible.builtin.file:
+    path: "/etc/keyd/"
+    state: directory
+    mode: "0755"
+  tags: ['keyd']
+
+- name: keyd | setup default conf
+  become: true
+  become_user: root
+  ansible.builtin.copy:
+    src: "files/keyd/default.conf"
+    dest: "/etc/keyd/default.conf"
+    mode: "0644"
+  tags: ['keyd']

@@ -1,0 +1,97 @@
+---
+- name: homebox playbook
+  hosts: localhost
+  connection: local
+
+  pre_tasks:
+    - name: pre_tasks | update system
+      become: true
+      become_user: root
+      ansible.builtin.dnf5:
+        name: "*"
+        state: latest
+        update_cache: true
+
+    - name: pre_tasks | install system dependencies
+      become: true
+      become_user: root
+      ansible.builtin.dnf5:
+        name:
+          - python3-pip
+          - python-dnf
+          - nodejs
+          - nodejs-npm
+          - stow
+          - cargo
+          - pinentry
+
+    - name: pre_tasks | install linuxbrew
+      ansible.builtin.import_tasks: tasks/linuxbrew.yml
+      tags: ['linuxbrew']
+
+    - name: pre_tasks | npm install global packages on user home
+      ansible.builtin.lineinfile:
+        path: ~/.npmrc
+        regexp: '^prefix='
+        line: prefix=~/.local/
+        create: true
+        mode: "0644"
+
+  tasks:
+    - name: misc | install system packages
+      become: true
+      become_user: root
+      ansible.builtin.dnf5:
+        name:
+          - fzf
+          - ripgrep
+          - fd-find
+          - eza
+          - bat
+          - fish
+          - tmux
+          - zoxide
+          - jq
+          - htop
+          - nvtop
+          - ansible-lint
+          - wl-clipboard
+          - btop
+          - htop
+          - golang
+          - pgcli
+          - navi
+        state: present
+
+    - name: flatpak | install packages
+      community.general.flatpak:
+        name:
+          - com.bitwarden.desktop
+          - com.slack.Slack
+          - com.github.PintaProject.Pinta
+          - dev.aunetx.deezer
+        state: present
+
+    - name: keyd | setup
+      ansible.builtin.import_tasks: tasks/keyd.yml
+      tags: ['keyd']
+
+    - name: lazygit | setup
+      ansible.builtin.import_tasks: tasks/lazygit.yml
+      tags: ['lazygit']
+
+    - name: neovim | setup
+      ansible.builtin.import_tasks: tasks/neovim.yml
+      tags: ['neovim']
+
+    - name: kitty | setup
+      ansible.builtin.import_tasks: tasks/kitty.yml
+      tags: ['kitty']
+
+    - name: process-compose | setup
+      ansible.builtin.import_tasks: tasks/process-compose.yml
+      tags: ['process-compose']
+
+    - name: blueetooth | setup
+      ansible.builtin.import_tasks: tasks/blueetooth.yml
+      tags: ['blueetooth']

@@ -1,0 +1,18 @@
+% git
+
+$ toplevel_directory: git rev-parse --show-toplevel
+$ default_branch: git remote show origin | grep 'HEAD branch' | awk --field-separator ': ' --assign OFS='' '{$1=""; print}'
+$ upstream_branch: git rev-parse --abbrev-ref --symbolic-full-name @{u} | cut --delimiter / --fields 2-
+$ remote_branch: echo -e "<default_branch>\n<upstream_branch>" | awk '!seen[$0]++'
+$ commit: git log --pretty=format:'%h	%d %s' --- --column 1 --preview "git show $(echo {} | awk '{ print $1 }')"
+$ branch: git branch --all --format='%(refname:short)' | awk '!seen[$0]++'
+
+# pull rebase with remote
+git pull --autostash --rebase origin <remote_branch>
+
+# rebase interactive up to commit
+git rebase --autostash --interactive <commit>~1
+
+# checkout remote brach
+git checkout <branch>
+git branch --set-upstream-to origin/<branch>

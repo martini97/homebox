@@ -1,0 +1,21 @@
+---
+- name: linuxbrew | install dependencies
+  become: true
+  become_user: root
+  ansible.builtin.dnf5:
+    state: present
+    name:
+      - git
+      - curl
+      - procps-ng
+      - file
+      - libxcrypt-compat
+  tags: ['linuxbrew']
+
+- name: linuxbrew | install
+  ansible.builtin.shell: |
+    NONINTERACTIVE=1 bash -c \
+      "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  args:
+    creates: /home/linuxbrew/.linuxbrew/bin/brew
+  tags: ['linuxbrew']
