@@ -1,0 +1,61 @@
+---
+- name: homebox playbook
+  hosts: localhost
+  connection: local
+
+  pre_tasks:
+    - name: update system
+      become: true
+      become_user: root
+      ansible.builtin.dnf5:
+        name: "*"
+        state: latest
+        update_cache: true
+
+    - name: install system dependencies
+      become: true
+      become_user: root
+      ansible.builtin.dnf5:
+        name:
+          - python-dnf
+          - nodejs
+          - nodejs-npm
+          - stow
+        state: present
+
+    # this is required to allow globally installing node packages without 'become'
+    - name: npm install global packages on user home
+      ansible.builtin.lineinfile:
+        path: ~/.npmrc
+        regexp: '^prefix='
+        line: prefix=~/.local/
+
+  tasks:
+    - name: install cli tools
+      become: true
+      become_user: root
+      ansible.builtin.dnf5:
+        name:
+          - fzf
+          - ripgrep
+          - fd-find
+          - eza
+          - bat
+          - fish
+          - tmux
+        state: present
+      tags:
+        - cli
+        - tools
+
+    - name: fix missing xterm-kitty terminfo
+      become: true
+      become_user: root
+      ansible.builtin.dnf5:
+        name: kitty-terminfo
+        state: present
+      tags:
+        - kitty
+
+    - name: neovim
+      ansible.builtin.import_tasks: neovim/main.yaml

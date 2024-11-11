@@ -8,6 +8,8 @@ TOOLBOX_DISTRO := fedora
 TOOLBOX_RELEASE := 41
 TOOLBOX_NAME := homebox
 
+PLAYBOOK := $(CURDIR)/playbook/$(TOOLBOX_NAME).yaml
+
 toolbox-create: $(STAMP_DIR)/toolbox-create
 
 toolbox-cleanup:
@@ -17,7 +19,7 @@ toolbox-cleanup:
 
 toolbox-setup: toolbox-create
 	toolbox run --container $(TOOLBOX_NAME) sudo dnf --assumeyes install ansible
-	toolbox run --container $(TOOLBOX_NAME) ansible-playbook $(CURDIR)/homebox-playbook.yaml --ask-become-pass 
+	toolbox run --container $(TOOLBOX_NAME) ansible-playbook $(PLAYBOOK) --ask-become-pass
 
 stow: $(STOW_TARGETS)
 
