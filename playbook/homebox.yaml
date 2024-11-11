@@ -43,6 +43,7 @@
           - bat
           - fish
           - tmux
+          - zoxide
         state: present
       tags:
         - cli
