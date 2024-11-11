@@ -44,8 +44,10 @@ vim.opt.wildoptions:append("fuzzy")
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 vim.opt.exrc = true
+
 -- TODO(2024-11-11): improve this (perf. issues)
 vim.opt.path:append("**")
+vim.opt.wildignore:append("**/node_modules/**")
 
 vim.keymap.set("n", "gl", vim.diagnostic.open_float, { desc = "open diagnostic floating window" })
 vim.keymap.set(
