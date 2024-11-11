@@ -1,9 +1,11 @@
+local ignore_fts = { "netrw" }
+
 local function treesitter_start(ev)
 	local ft = ev.match
 	local ok, err = pcall(vim.treesitter.start)
-	if not ok then
+	if not ok and not vim.list_contains(ignore_fts, ft) then
 		local msg = ("treesitter: failed to start for filetype='%s', err: %s"):format(ft, err)
-		vim.notify(msg, vim.log.levels.ERROR)
+		vim.notify_once(msg, vim.log.levels.ERROR)
 	end
 end
 
