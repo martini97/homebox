@@ -44,7 +44,7 @@ vim.opt.wildoptions:append("fuzzy")
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 vim.opt.exrc = true
-vim.opt.guicursor = "n-v-c:block-Cursor/lCursor,i:block-iCursor"
+-- TODO(2024-11-11): improve this (perf. issues)
 vim.opt.path:append("**")
 
 vim.keymap.set("n", "gl", vim.diagnostic.open_float, { desc = "open diagnostic floating window" })
@@ -120,16 +120,6 @@ vim.keymap.set("n", "<c-l>", function()
 	vim.cmd.LspRestart()
 end, { desc = "reset everything" })
 
-vim.api.nvim_create_autocmd("ColorScheme", {
-	group = vim.api.nvim_create_augroup("UserColorschemeCursor", { clear = true }),
-	pattern = "*",
-	callback = function()
-		vim.api.nvim_set_hl(0, "Cursor", { bg = "#add8e6" })
-		vim.api.nvim_set_hl(0, "iCursor", { bg = "#e6adbc" })
-	end,
-})
-
-vim.cmd.colorscheme("default")
 vim.cmd.packadd("cfilter")
 
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
@@ -143,6 +133,7 @@ local qfg = vim.api.nvim_create_augroup("quickfix_config", { clear = true })
 vim.api.nvim_create_autocmd("QuickFixCmdPost", { group = qfg, pattern = { "[^l]*" }, command = "cwindow" })
 vim.api.nvim_create_autocmd("QuickFixCmdPost", { group = qfg, pattern = { "l*" }, command = "lwindow" })
 
+-- vim-cool
 vim.api.nvim_create_autocmd("CursorMoved", {
 	group = vim.api.nvim_create_augroup("vim_cool", { clear = true }),
 	callback = function()
