@@ -28,3 +28,9 @@
 [commit]
   verbose = true
   gpgsign = true
+
+[includeIf "hasconfig:remote.*.url:https://github.com:**/**"]
+  path = config.github
+
+[includeIf "hasconfig:remote.*.url:git@github.com:**/**"]
+  path = config.github
