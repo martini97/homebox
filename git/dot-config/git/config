@@ -1,0 +1,30 @@
+[user]
+  name = Alessandro Martini
+  email = martini97@protonmail.ch
+  username = martini
+
+[core]
+  editor = nvim
+  excludesfile = ~/.config/git/ignore
+
+[init]
+  defaultBranch = "main"
+
+[pull]
+  rebase = true
+
+[push]
+  default = current
+
+[rebase]
+  instructionFormat = (%an <%ae>) %s
+
+[merge]
+  tool = "nvimdiff"
+
+[mergetool]
+  prompt = false
+
+[commit]
+  verbose = true
+  gpgsign = true
