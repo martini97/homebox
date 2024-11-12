@@ -1,6 +1,10 @@
 vim.opt_local.isfname:append({ "@-@" })
 vim.opt_local.suffixesadd:prepend({ ".js", ".mjs", ".cjs", ".jsx", ".ts", ".tsx", ".d.ts", ".vue", "/package.json" })
 
+vim.opt_local.formatprg = "prettierd % | eslint_d --fix-to-stdout --stdin %"
+
+require("core.formatter").register()
+
 vim.lsp.start({
 	name = "vtsls",
 	cmd = { "vtsls", "--stdio" },
@@ -32,41 +36,39 @@ local eslint_rootdir = vim.fs.root(0, {
 	"eslint.config.cts",
 })
 
-vim.lsp.start({
-	name = "vscode-eslint-language-server",
-	cmd = { "vscode-eslint-language-server", "--stdio" },
-	root_dir = eslint_rootdir,
-	handlers = {
-		["eslint/openDoc"] = function(_, result)
-			local url = vim.tbl_get(result or {}, "url")
-			if not url or url == "" then
-				return
-			end
+if eslint_rootdir and eslint_rootdir ~= "" then
+	local function eslint_open_doc(_, result)
+		local url = vim.tbl_get(result or {}, "url")
+		if url and url ~= "" then
 			vim.ui.open(url)
-			return {}
-		end,
-	},
-	settings = {
-		validate = "on",
-		packageManager = nil,
-		useESLintClass = false,
-		experimental = { useFlatConfig = false },
-		codeActionOnSave = { enable = false, mode = "all" },
-		format = true,
-		quiet = false,
-		onIgnoredFiles = "off",
-		rulesCustomizations = {},
-		run = "onType",
-		problems = { shortenToSingleLine = false },
-		nodePath = "",
-		workingDirectory = { mode = "location" },
-		workspaceFolder = {
-			uri = vim.uri_from_fname(eslint_rootdir),
-			name = vim.fs.basename(eslint_rootdir),
+		end
+		return {}
+	end
+
+	vim.lsp.start({
+		name = "vscode-eslint-language-server",
+		cmd = { "vscode-eslint-language-server", "--stdio" },
+		root_dir = eslint_rootdir,
+		handlers = { ["eslint/openDoc"] = eslint_open_doc },
+		settings = {
+			validate = "on",
+			packageManager = nil,
+			useESLintClass = false,
+			experimental = { useFlatConfig = false },
+			codeActionOnSave = { enable = false, mode = "all" },
+			format = true,
+			quiet = false,
+			onIgnoredFiles = "off",
+			rulesCustomizations = {},
+			run = "onType",
+			problems = { shortenToSingleLine = false },
+			nodePath = "",
+			workingDirectory = { mode = "location" },
+			workspaceFolder = { uri = vim.uri_from_fname(eslint_rootdir), name = vim.fs.basename(eslint_rootdir) },
+			codeAction = {
+				disableRuleComment = { enable = true, location = "separateLine" },
+				showDocumentation = { enable = true },
+			},
 		},
-		codeAction = {
-			disableRuleComment = { enable = true, location = "separateLine" },
-			showDocumentation = { enable = true },
-		},
-	},
-})
+	})
+end

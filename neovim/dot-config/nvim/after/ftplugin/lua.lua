@@ -1,5 +1,7 @@
 vim.opt_local.formatprg = "stylua --stdin-filepath % -"
 
+require("core.formatter").register()
+
 vim.lsp.start({
 	name = "lua-ls",
 	cmd = { "lua-language-server" },
