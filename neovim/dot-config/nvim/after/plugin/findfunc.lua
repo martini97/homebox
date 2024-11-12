@@ -21,8 +21,8 @@ local function globify(str)
 	if str == "" then
 		return str
 	end
-	if not vim.startswith(str, "**/") then
-		str = "**/" .. str
+	if not vim.startswith(str, "**/*") then
+		str = "**/*" .. str
 	end
 	if not vim.endswith(str, "*") then
 		str = str .. "*"
