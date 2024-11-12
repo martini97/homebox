@@ -1,4 +1,4 @@
-local ignore_fts = { "netrw" }
+local ignore_fts = { "netrw", "fzf" }
 
 local function treesitter_start(ev)
 	local ft = ev.match
