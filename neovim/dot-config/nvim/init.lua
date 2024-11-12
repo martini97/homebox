@@ -144,3 +144,19 @@ vim.api.nvim_create_autocmd("CursorMoved", {
 		end
 	end,
 })
+
+vim.keymap.set("c", "<space>", function()
+	local mode = vim.fn.getcmdtype()
+	local line = vim.fn.getcmdline()
+	local cmd = vim.api.nvim_parse_cmd(line, {})
+	local is_search = mode == "?" or mode == "/"
+	local is_find = cmd.cmd == "find" or cmd.cmd == "sfind"
+
+	if is_search then
+		return ".*"
+	elseif is_find then
+		return "*"
+	else
+		return " "
+	end
+end, { expr = true })
