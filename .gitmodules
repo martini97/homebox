@@ -1,3 +1,6 @@
 [submodule "neovim/dot-config/nvim/pack/plugins/start/nvim-surround"]
 	path = neovim/dot-config/nvim/pack/plugins/start/nvim-surround
 	url = https://github.com/kylechui/nvim-surround.git
+[submodule "neovim/dot-config/nvim/pack/plugins/start/nvim-treesitter"]
+	path = neovim/dot-config/nvim/pack/plugins/start/nvim-treesitter
+	url = https://github.com/nvim-treesitter/nvim-treesitter.git

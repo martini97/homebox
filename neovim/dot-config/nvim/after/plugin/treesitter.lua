@@ -1,16 +1,33 @@
-local ignore_fts = { "netrw", "fzf" }
+require("nvim-treesitter.configs").setup({
+	ensure_installed = {
+		"lua",
+		"vim",
+		"vimdoc",
+		"query",
+		"markdown",
+		"markdown_inline",
+		"typescript",
+		"javascript",
+		"vue",
+	},
+	sync_install = true,
+	auto_install = false,
+	ignore_install = {},
+	modules = {},
+	highlight = { enable = true, additional_vim_regex_highlighting = false },
+	indent = { enable = true },
+})
 
-local logger = require("vlog").new({ plugin = "plugin.treesitter", level = vim.log.levels.OFF })
+vim.wo.foldmethod = "expr"
+vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
-local function treesitter_start(ev)
-	local ft = ev.match
-	local ok, err = pcall(vim.treesitter.start)
-	if not ok and not vim.list_contains(ignore_fts, ft) then
-		logger:error("treesitter failed to start", { filetype = ft, error = err })
-	end
-end
-
-vim.api.nvim_create_autocmd("FileType", {
-	group = vim.api.nvim_create_augroup("UserTreesitter", { clear = true }),
-	callback = treesitter_start,
+vim.api.nvim_create_autocmd("BufEnter", {
+	group = vim.api.nvim_create_augroup("UserTSCompleteFund", { clear = true }),
+	callback = function(ev)
+		local has_parser = require("nvim-treesitter.parsers").has_parser()
+		if not has_parser then
+			return
+		end
+		vim.bo[ev.buf].completefunc = "v:lua.vim.treesitter.query.omnifunc"
+	end,
 })
