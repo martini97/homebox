@@ -1,34 +1,26 @@
-if vim.g.loaded_formatter == 1 then
-	return
-end
+local formatter = {}
+local Logger = require("vlog")
 
-vim.g.loaded_formatter = 1
+local logger = Logger.new({ plugin = "core.formatter", level = Logger.get_level_from_env("VIM_LOGLEVEL") })
 
-local TIMEOUT_CODE = 124
-local plugin_name = "formatter"
-
----@class formatter.Opts
+---@class core.formatter.Opts
 ---@field bufnr? number
 ---@field start_lnum? number
 ---@field end_lnum? number
 ---@field timeout? number
 ---@field formatprg? string
 
-local function logger(level)
-	return function(msg, ctx)
-		msg = string.format("[%s] %s, ctx=%s", plugin_name, msg, vim.inspect(ctx))
-		vim.notify(msg, level)
-	end
+---Check if a vim.system call timed out.
+---@param syscomp vim.SystemCompleted
+---@return boolean
+local function system_timedout(syscomp)
+	local timeout_code = 124
+	return syscomp.code == timeout_code
 end
 
-local log_debug = logger(vim.log.levels.DEBUG)
-local log_info = logger(vim.log.levels.INFO)
-local log_warn = logger(vim.log.levels.WARN)
-local log_error = logger(vim.log.levels.ERROR)
-
----@param opts formatter.Opts
+---@param opts core.formatter.Opts
 ---@return number
-function _G.formatprg(opts)
+function formatter.formatprg(opts)
 	opts = opts or {}
 	opts.bufnr = opts.bufnr or 0
 	opts.start_lnum = opts.start_lnum or 0
@@ -37,12 +29,12 @@ function _G.formatprg(opts)
 	opts.formatprg = opts.formatprg or vim.bo[opts.bufnr].formatprg
 
 	if opts.start_lnum < 0 or opts.end_lnum < 0 then
-		log_warn("invalid range for formatprg", opts)
+		logger:warn("invalid range for formatprg", opts)
 		return 0
 	end
 
 	if not opts.formatprg or opts.formatprg == "" then
-		log_warn("formatprg is not set", opts)
+		logger:warn("formatprg is not set", opts)
 		return 0
 	end
 
@@ -52,14 +44,14 @@ function _G.formatprg(opts)
 		{ stdin = stdin, text = true, timeout = 500 }
 	):wait()
 
-	if result.code == TIMEOUT_CODE then
-		log_warn("formatter timed out", opts)
+	if system_timedout(result) then
+		logger:warn("formatter timed out", opts)
 		return 0
 	end
 
 	if result.code ~= 0 then
 		local stderr = vim.split(result.stderr or "", "\n", { trimempty = true })
-		log_error("formatter failed", { opts = opts, stderr = stderr })
+		logger:error("formatter failed", { opts = opts, stderr = stderr })
 		return 0
 	end
 
@@ -74,11 +66,20 @@ function _G.formatprg(opts)
 	return 0
 end
 
-function _G.format_expr()
+---Execute formatter.formatprg as formatexpr
+function formatter.formatexpr()
 	if vim.list_contains({ "i", "R", "ic", "ix" }, vim.fn.mode()) then
 		return 1
 	end
-	_G.formatprg({ start_lnum = vim.v.lnum - 1, end_lnum = vim.v.lnum + vim.v.count - 1 })
+	formatter.formatprg({ start_lnum = vim.v.lnum - 1, end_lnum = vim.v.lnum + vim.v.count - 1 })
 end
 
-vim.opt.formatexpr = "v:lua.format_expr()"
+---Register formatter.formatexpr as the formatexpr for the bufnr
+---@param bufnr? integer
+function formatter.register(bufnr)
+	bufnr = bufnr or vim.api.nvim_get_current_buf()
+	vim.bo[bufnr].formatexpr = [[v:lua.require("core.formatter").formatexpr()]]
+	logger:debug("registered buffer", { bufnr = bufnr, formatexpr = vim.bo[bufnr].formatexpr })
+end
+
+return formatter
