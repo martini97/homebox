@@ -1,9 +1,7 @@
 vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(ev)
-		vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = ev.buf, desc = "[lsp] references" })
-		vim.keymap.set("n", "gR", vim.lsp.buf.rename, { buffer = ev.buf, desc = "[lsp] rename" })
 		vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = ev.buf, desc = "[lsp] definition" })
-		vim.keymap.set("n", "go", vim.lsp.buf.outgoing_calls, { buffer = ev.buf, desc = "[lsp] outgoing calls" })
+		vim.keymap.set("n", "gro", vim.lsp.buf.outgoing_calls, { buffer = ev.buf, desc = "[lsp] outgoing calls" })
 	end,
 })
 
