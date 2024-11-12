@@ -3,6 +3,10 @@
   email = martini97@protonmail.ch
   username = martini
 
+[alias]
+  st = status
+  ll = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+
 [core]
   editor = nvim
   excludesfile = ~/.config/git/ignore
