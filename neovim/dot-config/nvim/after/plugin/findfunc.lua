@@ -54,6 +54,9 @@ end
 ---@param files string[]
 ---@return string[]
 local function filter_files(query, files)
+	if query and vim.uv.fs_statfs(query) then
+		return { query }
+	end
 	if has_cmd("fzf") then
 		local cmd = { "fzf", "--filter", glob_to_fzf(query) }
 		local result = vim.system(cmd, { stdin = files, text = true }):wait()
