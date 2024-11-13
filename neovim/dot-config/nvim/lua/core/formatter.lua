@@ -1,7 +1,7 @@
 local formatter = {}
 local Logger = require("vlog")
 
-local logger = Logger.new({ plugin = "core.formatter", level = Logger.get_level_from_env("VIM_LOGLEVEL") })
+local logger = Logger:new({ plugin = "core.formatter", level = Logger.get_level_from_env("VIM_LOGLEVEL") })
 
 ---@class core.formatter.Opts
 ---@field bufnr? number
