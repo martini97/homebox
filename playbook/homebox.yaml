@@ -45,6 +45,7 @@
           - tmux
           - zoxide
           - pinentry
+          - jq
         state: present
       tags:
         - cli
