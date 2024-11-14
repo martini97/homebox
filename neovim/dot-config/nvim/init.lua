@@ -1,6 +1,7 @@
 vim.loader.enable()
 
 local utils = require("core.utils")
+local core_vim = require("core.vim")
 
 vim.opt.background = "light"
 
@@ -125,19 +126,30 @@ end, { desc = "reset everything" })
 vim.cmd.packadd("cfilter")
 
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
-	group = vim.api.nvim_create_augroup("highlight_yank", { clear = true }),
+	group = vim.api.nvim_create_augroup("UserHighlightYank", { clear = true }),
+	desc = "Highlight yanked region",
 	callback = function()
 		vim.highlight.on_yank({ higroup = "Visual", timeout = 300 })
 	end,
 })
 
-local qfg = vim.api.nvim_create_augroup("quickfix_config", { clear = true })
-vim.api.nvim_create_autocmd("QuickFixCmdPost", { group = qfg, pattern = { "[^l]*" }, command = "cwindow" })
-vim.api.nvim_create_autocmd("QuickFixCmdPost", { group = qfg, pattern = { "l*" }, command = "lwindow" })
+local qfg = vim.api.nvim_create_augroup("UserQuickfix", { clear = true })
+vim.api.nvim_create_autocmd("QuickFixCmdPost", {
+	group = qfg,
+	desc = "Automatically open quickfix window",
+	pattern = { "[^l]*" },
+	command = "botright cwindow",
+})
+vim.api.nvim_create_autocmd("QuickFixCmdPost", {
+	group = qfg,
+	desc = "Automatically open loclist window",
+	pattern = { "l*" },
+	command = "lwindow",
+})
 
 -- vim-cool
 vim.api.nvim_create_autocmd("CursorMoved", {
-	group = vim.api.nvim_create_augroup("vim_cool", { clear = true }),
+	group = vim.api.nvim_create_augroup("UserVimCool", { clear = true }),
 	callback = function()
 		if vim.v.hlsearch == 1 and vim.fn.searchcount().exact_match == 0 then
 			vim.schedule(vim.cmd.nohlsearch)
@@ -146,11 +158,14 @@ vim.api.nvim_create_autocmd("CursorMoved", {
 })
 
 vim.keymap.set("c", "<space>", function()
-	local mode = vim.fn.getcmdtype()
-	local line = vim.fn.getcmdline()
-	local cmd = vim.api.nvim_parse_cmd(line, {})
+	local mode = vim.fn.getcmdtype() or ""
+	local line = vim.fn.getcmdline() or ""
+	local cmd_ok, cmd = pcall(function()
+		local cmd = line ~= "" and vim.api.nvim_parse_cmd(line, {})
+		return cmd and cmd.cmd or ""
+	end)
 	local is_search = mode == "?" or mode == "/"
-	local is_find = cmd.cmd == "find" or cmd.cmd == "sfind"
+	local is_find = line ~= "" and mode == ":" and cmd_ok and cmd and (cmd == "find" or cmd == "sfind")
 
 	if is_search then
 		return ".*"
@@ -160,3 +175,17 @@ vim.keymap.set("c", "<space>", function()
 		return " "
 	end
 end, { expr = true })
+
+vim.keymap.set("n", "[c", function()
+	local ok, err = pcall(vim.cmd.cprev)
+	if not ok and core_vim.is_err(err, "E553") then
+		vim.cmd.clast()
+	end
+end, { desc = "previous quickfix entry" })
+
+vim.keymap.set("n", "]c", function()
+	local ok, err = pcall(vim.cmd.cnext)
+	if not ok and core_vim.is_err(err, "E553") then
+		vim.cmd.cfirst()
+	end
+end, { desc = "next quickfix entry" })
