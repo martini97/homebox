@@ -36,6 +36,7 @@
       - bat
       - fswatch
       - nodejs-bash-language-server
+      - black
     state: present
   tags:
     - neovim
@@ -51,5 +52,6 @@
     - "@vue/language-server"
     - "@vtsls/language-server"
     - "vscode-langservers-extracted"
+    - "pyright"
   tags:
     - neovim
