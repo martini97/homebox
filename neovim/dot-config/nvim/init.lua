@@ -188,3 +188,5 @@ vim.keymap.set("n", "]c", function()
 		vim.cmd.cfirst()
 	end
 end, { desc = "next quickfix entry" })
+
+require("amake").setup()

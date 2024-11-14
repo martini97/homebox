@@ -19,7 +19,7 @@
 ---@field private use_console boolean
 ---@field private use_file boolean
 ---@field private highlights boolean
----@field private outfile string
+---@field outfile string
 ---@field private float_precision number
 ---@field private levels vlog.LevelConfig[]
 ---@field private levels_by_order table<number, vlog.LevelConfig>
