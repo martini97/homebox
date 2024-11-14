@@ -2,7 +2,15 @@ local amake = {}
 
 local logger = require("vlog"):new({ name = "amake" })
 
----@alias amake.List "quickfix" | "loclist"
+---@alias amake.ListType "quickfix" | "loclist"
+
+---@class amake.List
+---@field type amake.ListType
+---@field id number
+---@field winnr number
+---@field title string
+---@field errorfmt string
+---@field _posted boolean
 
 ---@class amake.MakeOpts
 ---@field winnr number
@@ -10,23 +18,53 @@ local logger = require("vlog"):new({ name = "amake" })
 ---@field bufname string
 ---@field makeprg string
 ---@field errorfmt string
----@field list amake.List
+---@field list amake.ListType
 
----Publishes entries to target list
 ---@param opts amake.MakeOpts
----@param entries string[]
-local function publish(opts, entries)
+---@return amake.List
+local list_create = function(opts)
+	---@type amake.List
+	local list = {
+		winnr = opts.winnr,
+		type = opts.list,
+		title = opts.makeprg,
+		errorfmt = opts.errorfmt,
+		id = 0,
+		_posted = false,
+	}
+
 	if opts.list == "quickfix" then
-		vim.fn.setqflist({}, " ", { title = opts.makeprg, lines = entries, efm = opts.errorfmt })
+		vim.fn.setqflist({}, " ", { title = list.title, lines = {}, efm = list.errorfmt, id = list.id })
+		list.id = vim.fn.getqflist({ id = 0 }).id
 	elseif opts.list == "loclist" then
-		vim.fn.setloclist(opts.winnr, {}, " ", { title = opts.makeprg, lines = entries, efm = opts.errorfmt })
+		vim.fn.setloclist(opts.winnr, {}, " ", { title = list.title, lines = {}, efm = list.errorfmt, id = list.id })
+		list.id = vim.fn.getloclist(opts.winnr, { id = 0 }).id
 	else
-		logger:error("invalid list, will not publish", opts)
-		return
+		logger:error("invalid list, will not create", { opts = opts, list, list })
 	end
 
-	vim.cmd.doautocmd("QuickFixCmdPost", opts.list)
+	logger:debug("created list", { opts = opts, list = list })
+	return list
 end
+
+---@param list amake.List
+---@param entries string[]
+local list_publish = vim.schedule_wrap(function(list, entries)
+	local action = "a"
+	local what = { lines = entries, id = list.id, title = list.title, efm = list.errorfmt }
+	if list.type == "quickfix" then
+		vim.fn.setqflist({}, action, what)
+	elseif list.type == "loclist" then
+		vim.fn.setloclist(list.winnr, {}, action, what)
+	else
+		error("invalid list")
+	end
+
+	if #entries > 0 and not list._posted then
+		vim.cmd.doautocmd("QuickFixCmdPost", list.type)
+		list._posted = true
+	end
+end)
 
 ---Setup logger level based on g:amake_loglevel
 local function setup_logger()
@@ -65,8 +103,8 @@ function amake.make(opts)
 		return
 	end
 
-	local entries = {}
 	local buffered = nil
+	local list = list_create(opts)
 
 	---@param err string?
 	---@param data string?
@@ -78,17 +116,17 @@ function amake.make(opts)
 			return
 		end
 		---@type string[]
-		local lines
+		local entries
 
 		data = buffered ~= nil and buffered .. data or data
-		lines = vim.split(data, "\n", { plain = true, trimempty = true })
-		buffered = not vim.endswith(lines[#lines], "\n") and lines[#lines] or nil
+		entries = vim.split(data, "\n", { plain = true, trimempty = true })
+		buffered = not vim.endswith(entries[#entries], "\n") and entries[#entries] or nil
 
 		if buffered then
-			lines = vim.list_slice(lines, 1, #lines - 1)
+			entries = vim.list_slice(entries, 1, #entries - 1)
 		end
 
-		vim.list_extend(entries, lines)
+		list_publish(list, entries)
 	end
 
 	---@param out vim.SystemCompleted
@@ -99,10 +137,8 @@ function amake.make(opts)
 		)
 
 		if buffered then
-			table.insert(entries, buffered)
+			list_publish(list, vim.split(buffered, "\n", { plain = true, trimempty = true }))
 		end
-
-		vim.schedule_wrap(publish)(opts, entries)
 	end
 
 	local command = { vim.o.shell, vim.o.shellcmdflag, vim.fn.expandcmd(opts.makeprg) }
