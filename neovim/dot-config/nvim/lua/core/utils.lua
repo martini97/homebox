@@ -24,10 +24,15 @@ end
 ---Source ftplugins for the given filetypes
 ---@param ... string
 function utils.ft_runtime(...)
-	local filetypes = { ... }
-	for _, filetype in pairs(filetypes) do
-		vim.cmd.runtime({ string.format("ftplugin/%s.lua", filetype), bang = true })
-	end
+	vim.iter({ ... })
+		:map(function(ft)
+			return { string.format("ftplugin/%s.lua", ft), string.format("ftplugin/%s/*.lua", ft) }
+		end)
+		:flatten()
+		:map(function(pattern)
+			vim.cmd.runtime({ pattern, bang = true })
+		end)
+		:totable()
 end
 
 return utils
