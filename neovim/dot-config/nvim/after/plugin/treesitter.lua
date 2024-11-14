@@ -9,6 +9,8 @@ require("nvim-treesitter.configs").setup({
 		"typescript",
 		"javascript",
 		"vue",
+		"http",
+		"python",
 	},
 	sync_install = true,
 	auto_install = false,
@@ -22,7 +24,7 @@ vim.wo.foldmethod = "expr"
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
 vim.api.nvim_create_autocmd("BufEnter", {
-	group = vim.api.nvim_create_augroup("UserTSCompleteFund", { clear = true }),
+	group = vim.api.nvim_create_augroup("UserTSCompletefunc", { clear = true }),
 	callback = function(ev)
 		local has_parser = require("nvim-treesitter.parsers").has_parser()
 		if not has_parser then
