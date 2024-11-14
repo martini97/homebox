@@ -1,7 +1,6 @@
 vim.loader.enable()
 
 local utils = require("core.utils")
-local core_vim = require("core.vim")
 
 vim.opt.background = "light"
 
@@ -178,14 +177,14 @@ end, { expr = true })
 
 vim.keymap.set("n", "[c", function()
 	local ok, err = pcall(vim.cmd.cprev)
-	if not ok and core_vim.is_err(err, "E553") then
+	if not ok and utils.is_err(err, "E553") then
 		vim.cmd.clast()
 	end
 end, { desc = "previous quickfix entry" })
 
 vim.keymap.set("n", "]c", function()
 	local ok, err = pcall(vim.cmd.cnext)
-	if not ok and core_vim.is_err(err, "E553") then
+	if not ok and utils.is_err(err, "E553") then
 		vim.cmd.cfirst()
 	end
 end, { desc = "next quickfix entry" })

@@ -1,4 +1,4 @@
-vim.cmd("runtime! ftplugin/javascript.lua")
-vim.cmd("runtime! ftplugin/javascript/*.lua")
+local utils = require("core.utils")
 
+utils.ft_runtime("javascript")
 vim.cmd.compiler("tsc")
