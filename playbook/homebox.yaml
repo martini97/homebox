@@ -46,6 +46,7 @@
           - zoxide
           - pinentry
           - jq
+          - htop
         state: present
       tags:
         - cli
