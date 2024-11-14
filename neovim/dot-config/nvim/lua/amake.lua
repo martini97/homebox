@@ -1,6 +1,8 @@
 local amake = {}
-
 local logger = require("vlog"):new({ name = "amake" })
+
+---@type table<integer, vim.SystemObj>
+local procs = {}
 
 ---@alias amake.ListType "quickfix" | "loclist"
 
@@ -66,6 +68,19 @@ local list_publish = vim.schedule_wrap(function(list, entries)
 	end
 end)
 
+---@param opts amake.MakeOpts
+local function kill_running_proc(opts)
+	local proc = procs[opts.bufnr]
+	if not proc then
+		return
+	end
+	logger:debug("found old process still running", { opts = opts, proc = proc })
+	local ok, err = pcall(function()
+		proc:kill(1)
+	end)
+	logger:debug("killed old process", { opts = opts, ok = ok, err = err })
+end
+
 ---Setup logger level based on g:amake_loglevel
 local function setup_logger()
 	local loglevel = vim.g.amake_loglevel or vim.log.levels.WARN
@@ -103,6 +118,8 @@ function amake.make(opts)
 		return
 	end
 
+	kill_running_proc(opts)
+
 	local buffered = nil
 	local list = list_create(opts)
 
@@ -131,6 +148,7 @@ function amake.make(opts)
 
 	---@param out vim.SystemCompleted
 	local on_exit = function(out)
+		procs[opts.bufnr] = nil
 		logger:debug(
 			"finished asynchronous make",
 			{ opts = opts, exit_code = out.code, stdout = out.stdout, stderr = out.stderr }
@@ -143,11 +161,13 @@ function amake.make(opts)
 
 	local command = { vim.o.shell, vim.o.shellcmdflag, vim.fn.expandcmd(opts.makeprg) }
 	logger:debug("starting asynchronous makeprg", { opts = opts, command = command })
-	vim.system(command, { text = true, stdout = on_data, stderr = on_data }, on_exit)
+	procs[opts.bufnr] = vim.system(command, { text = true, stdout = on_data, stderr = on_data }, on_exit)
 end
 
 function amake.setup()
 	install_user_commands()
 end
+
+amake._procs = procs
 
 return amake
