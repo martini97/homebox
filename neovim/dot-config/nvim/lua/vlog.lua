@@ -36,8 +36,9 @@
 ---@field get_level fun(self: vlog.Logger, level?: vlog.Level): vlog.LevelConfig
 ---@field set_level fun(self: vlog.Logger, level: vlog.Level)
 ---@field log fun(self: vlog.Logger, ...: unknown)
----@field fmt_log fun(self: vlog.Logger, fmt: string, ...: unknown)
----@field [string] fun(self: vlog.Logger, msg: string, ...: unknown)
+---@field fmt_log fun(self: vlog.Logger, level: vlog.Level, fmt: string, ...: unknown)
+---@field var_log fun(self: vlog.Logger, level: vlog.Level, value: unknown, message: string, ...: unknown): unknown
+---@field [string] fun(self: vlog.Logger, msg?: string, ...: unknown)
 
 ---@type vlog.Config
 local default_config = {
@@ -126,6 +127,10 @@ function Logger:new(config)
 
 		instance[string.format("fmt_%s", key)] = function(self_, fmt, ...)
 			self_:fmt_log(level_cfg.level, fmt, ...)
+		end
+
+		instance[string.format("var_%s", key)] = function(self_, value, message, ...)
+			self_:var_log(level_cfg.level, value, message, ...)
 		end
 	end
 
@@ -256,6 +261,17 @@ function Logger:fmt_log(level, fmt, ...)
 	local args = self:map_stringify(...)
 	local message = string.format(fmt, unpack(args))
 	self:log(level, message)
+end
+
+---@generic T
+---@param level vlog.Level
+---@param value T
+---@param message string
+---@param ... unknown
+---@return T
+function Logger:var_log(level, value, message, ...)
+	self:log(level, message, { value = value }, ...)
+  return value
 end
 
 return Logger
