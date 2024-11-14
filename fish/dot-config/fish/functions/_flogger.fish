@@ -95,6 +95,6 @@ function __flogger_cprintf
 
   set_color $color_args
   if test -n "$argv"
-    printf $argv
+    printf $argv >&2
   end
 end
