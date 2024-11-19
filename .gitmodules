@@ -4,3 +4,9 @@
 [submodule "neovim/dot-config/nvim/pack/plugins/start/nvim-treesitter"]
 	path = neovim/dot-config/nvim/pack/plugins/start/nvim-treesitter
 	url = https://github.com/nvim-treesitter/nvim-treesitter.git
+[submodule "neovim/dot-config/nvim/pack/plugins/start/nvim-lint"]
+	path = neovim/dot-config/nvim/pack/plugins/start/nvim-lint
+	url = https://github.com/mfussenegger/nvim-lint.git
+[submodule "neovim/dot-config/nvim/pack/plugins/start/conform"]
+	path = neovim/dot-config/nvim/pack/plugins/start/conform
+	url = https://github.com/stevearc/conform.nvim

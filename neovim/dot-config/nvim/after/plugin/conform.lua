@@ -1,0 +1,21 @@
+require("conform").setup({
+	format_on_save = { lsp_fallback = true, timeout_ms = 750 },
+	formatters_by_ft = {
+		lua = { "stylua" },
+		sh = { "shfmt", "shellcheck" },
+		fish = { "fish_indent" },
+		bash = { "shfmt", "shellcheck" },
+		javascript = { "prettierd", "eslint_d" },
+		typescript = { "prettierd", "eslint_d" },
+		javascriptreact = { "prettierd", "eslint_d" },
+		typescriptreact = { "prettierd", "eslint_d" },
+		["typescript.tsx"] = { "prettierd", "eslint_d" },
+		["javascript.jsx"] = { "prettierd", "eslint_d" },
+		vue = { "prettierd", "eslint_d" },
+		python = { "isort", "black" },
+		go = { "goimports", "golines", "gofmt" },
+		sql = { "sleek" },
+	},
+	log_level = vim.log.levels.TRACE,
+	notify_on_error = true,
+})
