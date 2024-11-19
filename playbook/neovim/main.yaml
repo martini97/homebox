@@ -20,9 +20,6 @@
 - name: lua-language-server
   ansible.builtin.import_tasks: lua-language-server.yaml
 
-- name: stylua
-  ansible.builtin.import_tasks: stylua.yaml
-
 - name: install neovim tools
   become: true
   become_user: root
@@ -53,5 +50,13 @@
     - "@vtsls/language-server"
     - "vscode-langservers-extracted"
     - "pyright"
+  tags:
+    - neovim
+
+- name: install cargo dependencies for neovim
+  community.general.cargo:
+    name:
+      - selene
+      - stylua
   tags:
     - neovim

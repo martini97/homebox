@@ -21,6 +21,7 @@
           - nodejs
           - nodejs-npm
           - stow
+          - cargo
         state: present
 
     # this is required to allow globally installing node packages without 'become'
