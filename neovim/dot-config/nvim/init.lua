@@ -99,15 +99,15 @@ vim.keymap.set("c", "<c-k>", "<C-f>D<C-c><C-c>:<Up>", { desc = "[emacs] kill to 
 vim.keymap.set("c", "<m-b>", "<c-left>", { desc = "[emacs] wordwise left" })
 vim.keymap.set("c", "<m-f>", "<c-right>", { desc = "[emacs] wordwise right" })
 
-vim.keymap.set("x", "id", function()
-	vim.w.saved_view = vim.fn.winsaveview()
-	vim.cmd.normal({ "G$Vgg0", bang = true })
-end, { desc = "inner document" })
+-- vim.keymap.set("x", "id", function()
+-- 	vim.w.saved_view = vim.fn.winsaveview()
+-- 	vim.cmd.normal({ "G$Vgg0", bang = true })
+-- end, { desc = "inner document" })
 
-vim.keymap.set("o", "id", function()
-	vim.w.saved_view = vim.fn.winsaveview()
-	vim.cmd.normal({ "GVgg", bang = true })
-end, { desc = "inner document" })
+-- vim.keymap.set("o", "id", function()
+-- 	vim.w.saved_view = vim.fn.winsaveview()
+-- 	vim.cmd.normal({ "GVgg", bang = true })
+-- end, { desc = "inner document" })
 
 vim.keymap.set("n", "<c-l>", function()
 	vim.cmd.nohlsearch()
