@@ -2,6 +2,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(ev)
 		vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = ev.buf, desc = "[lsp] definition" })
 		vim.keymap.set("n", "gro", vim.lsp.buf.outgoing_calls, { buffer = ev.buf, desc = "[lsp] outgoing calls" })
+		vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 	end,
 })
 
