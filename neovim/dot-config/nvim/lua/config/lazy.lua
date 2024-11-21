@@ -127,6 +127,22 @@ require("lazy").setup({
 				vim.g.git_worktree_loglevel = vim.log.levels.INFO
 			end,
 		},
+		{
+			"NeogitOrg/neogit",
+			dependencies = { "nvim-lua/plenary.nvim", "sindrets/diffview.nvim", "ibhagwan/fzf-lua" },
+			config = true,
+			cmd = { "Neogit" },
+			keys = {
+				{
+					"<leader>gg",
+					function()
+						require("neogit").open({ kind = "auto" })
+					end,
+					mode = "n",
+					desc = "[neogit] open",
+				},
+			},
+		},
 		--- }}}
 		--- lint {{{
 		{

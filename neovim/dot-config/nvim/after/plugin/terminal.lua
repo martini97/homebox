@@ -1,6 +1,10 @@
+---@type integer
 vim.t.terminal_window = vim.t.terminal_window or -1
+---@type integer
 vim.t.terminal_buffer = vim.t.terminal_buffer or -1
+---@type integer
 vim.t.terminal_height = vim.t.terminal_height or 12
+---@type "aboveleft" | "belowright" | "topleft" | "botright"
 vim.t.terminal_split = vim.t.terminal_split or "botright"
 
 ---@return integer
@@ -9,7 +13,7 @@ local function __terminal_window_setup()
 	local height = vim.t.terminal_height or 12
 	local split = vim.t.terminal_split or "botright"
 
-	if vim.api.nvim_win_is_valid(win) and vim.fn.win_gotoid(win) then
+	if vim.api.nvim_win_is_valid(win) and vim.fn.win_gotoid(win) == 1 then
 		return win
 	end
 
@@ -54,4 +58,4 @@ vim.api.nvim_create_autocmd("TermOpen", {
 	end,
 })
 
-vim.keymap.set("n", "<localleader>st", terminal_toggle, { desc = "[terminal] toggle terminal" })
+vim.keymap.set("n", "<localleader><bs>", terminal_toggle, { desc = "[terminal] toggle terminal" })
