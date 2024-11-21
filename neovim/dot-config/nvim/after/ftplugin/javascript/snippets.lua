@@ -1,5 +1,0 @@
-vim.snippet.add("imp", [[import ${2:what} from "${1:where}";]], { buffer = 0 })
-vim.snippet.add("req", [[const ${2:what} = require("${1:where}");]], { buffer = 0 })
-vim.snippet.add("print", [[console.debug(">>> ${TM_FILENAME_BASE}:${TM_LINE_NUMBER}::${1}", ${1:what});]], { buffer = 0 })
-vim.snippet.add("fn", "function ${1:name}($2) {\n\t${3:// content}\n}", { buffer = 0 })
-vim.snippet.add("param", "@param {${2:any}} ${1:param}", { buffer = 0 })

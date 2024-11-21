@@ -17,9 +17,9 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-	spec = {
-		{ import = "plugins" },
-	},
+	spec = { { import = "plugins" } },
 	install = { colorscheme = { "default" } },
 	checker = { enabled = true },
+	dev = { path = "~/git/martini97", fallback = true },
+	rocks = { hererocks = true },
 })

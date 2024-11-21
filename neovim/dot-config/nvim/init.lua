@@ -29,7 +29,7 @@ vim.opt.incsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.updatetime = 50
-vim.opt.timeoutlen = 500
+vim.opt.timeoutlen = 300
 vim.opt.termguicolors = true
 vim.opt.cursorline = true
 vim.opt.list = true
@@ -44,6 +44,7 @@ vim.opt.wildoptions:append("fuzzy")
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 vim.opt.exrc = true
+vim.opt.mouse = ""
 
 -- TODO(2024-11-11): improve this (perf. issues)
 vim.opt.path:append("**")
@@ -123,7 +124,8 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 	group = vim.api.nvim_create_augroup("UserHighlightYank", { clear = true }),
 	desc = "Highlight yanked region",
 	callback = function()
-		vim.hl.on_yank({ higroup = "Visual", timeout = 300 })
+		local hl = vim.hl or vim.highlight
+		hl.on_yank({ higroup = "Search", timeout = 300 })
 	end,
 })
 
@@ -153,21 +155,8 @@ vim.api.nvim_create_autocmd("CursorMoved", {
 
 vim.keymap.set("c", "<space>", function()
 	local mode = vim.fn.getcmdtype() or ""
-	local line = vim.fn.getcmdline() or ""
-	local cmd_ok, cmd = pcall(function()
-		local cmd = line ~= "" and vim.api.nvim_parse_cmd(line, {})
-		return cmd and cmd.cmd or ""
-	end)
 	local is_search = mode == "?" or mode == "/"
-	local is_find = line ~= "" and mode == ":" and cmd_ok and cmd and (cmd == "find" or cmd == "sfind")
-
-	if is_search then
-		return ".*"
-	elseif is_find then
-		return "*"
-	else
-		return " "
-	end
+	return is_search and ".*" or " "
 end, { expr = true })
 
 vim.keymap.set("n", "[c", function()
