@@ -12,7 +12,7 @@ TARGETS=(
 
 tmux_switch() {
   local session="$1"
-  if [[ -z $TMUX ]]; then
+  if [[ -z "${TMUX:-}" ]]; then
     tmux attach-session -t "${session}"
   else
     tmux switch-client -t "${session}"
