@@ -174,4 +174,5 @@ vim.keymap.set("n", "]c", function()
 end, { desc = "next quickfix entry" })
 
 require("amake").setup()
+
 require("config.lazy")

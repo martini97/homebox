@@ -20,14 +20,15 @@ return {
 			sn(nil, { i(1), t("import { "), i(2, "what"), t(" } from '"), i(1), t("';") }),
 		}),
 	}),
-	s({ trig = "pd", name = "print print" }, {
-		fmt([[console.debug(">>> {filename}:{line_number}:{var_repeated}:::", {var})]], {
+	s(
+		{ trig = "pd", name = "print print" },
+		fmt([[console.debug(">>> {filename}:{line_number}:{var_repeated}:::", {var});]], {
 			filename = extras.partial(vim.fn.expand, "%:.:r"),
 			line_number = l(l.TM_LINE_NUMBER),
 			var = i(1),
 			var_repeated = rep(1),
-		}),
-	}),
+		})
+	),
 	postfix(".pd", {
 		f(function(_, parent)
 			local fname = vim.fn.expand("%:.:r")
@@ -41,4 +42,10 @@ return {
 			)
 		end),
 	}),
+	s(
+		{ trig = "sleep", name = "sleep" },
+		fmt([[await new Promise((r) => setTimeout(r, {ms}));]], {
+			ms = i(1, "ms"),
+		})
+	),
 }

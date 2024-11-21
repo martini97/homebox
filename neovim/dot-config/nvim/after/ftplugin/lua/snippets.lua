@@ -1,9 +1,0 @@
--- vim.snippet.add(
--- 	"print",
--- 	[[vim.print([=[>>> ${TM_FILENAME_BASE}:${TM_LINE_NUMBER}::${1}]=], ${1:what})]],
--- 	{ buffer = 0 }
--- )
--- vim.snippet.add("snip", [[vim.snippet.add("${1:trigger}", "${2:body}", {${3:opts}})]], { buffer = 0 })
--- vim.snippet.add("req", [[local ${2:what} = require("${1:from}")]], { buffer = true })
--- vim.snippet.add("fn", "function ${1:name}($2)\n\t${3:-- content}\nend", { buffer = true })
--- vim.snippet.add("lfn", "local function ${1:name}($2)\n\t${3:-- content}\nend", { buffer = 0 })

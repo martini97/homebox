@@ -2,7 +2,6 @@ require("fzf-lua").setup({})
 require("fzf-lua").register_ui_select()
 
 local keymaps = {
-	f = "files",
 	h = "helptags",
 	b = "buffers",
 	k = "keymaps",
@@ -26,4 +25,11 @@ vim.keymap.set(
 	string.format(":<c-u>FzfLua files cwd=%s<cr>", vim.fn.stdpath("config")),
 	{ desc = "[fzf-lua] neovim config" }
 )
+
+vim.keymap.set("n", "<leader>ff", function()
+	local count = vim.v.count or 0
+	local cwd = vim.fn.getcwd(-1, count < 1 and 0 or -1)
+	require("fzf-lua").files({ cwd = cwd })
+end, { desc = "[fzf-lua] find files (global cwd)" })
+
 vim.keymap.set("n", "<leader>/", ":<c-u>FzfLua blines<cr>", { desc = "[fzf-lua] blines" })
