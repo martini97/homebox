@@ -17,6 +17,35 @@
   tags:
     - neovim
 
+- name: install hererocks
+  ansible.builtin.pip:
+    name: hererocks
+    extra_args: --user
+
+- name: install lua 5.1
+  ansible.builtin.shell: |
+    set -euo pipefail
+
+    tmp_dir="$(mktemp --directory --tmpdir=/tmp lua51.build.XXXXXX)"
+    target_out="${tmp_dir}/lua-5.1.5.tar.gz"
+    target_dir="${tmp_dir}/lua-5.1.5"
+    install_target="$HOME/.local/share/lua@5.1"
+    bin_target="$HOME/.local/bin/lua5.1"
+
+    mkdir -p "${target_dir}"
+    mkdir -p "$(dirname "${install_target}")"
+    mkdir -p "$(dirname "${bin_target}")"
+
+    wget --output-document "${target_out}" "https://www.lua.org/ftp/lua-5.1.5.tar.gz"
+    tar -xf "${target_out}" -C "${target_dir}" --strip-components=1
+    make -C "${target_dir}/src" all
+    make -C "${target_dir}" INSTALL_TOP="${install_target}" install
+    ln -s "${install_target}/bin/lua" "${bin_target}"
+
+    rm -rf "${tmp_dir}"
+  args:
+    creates: ~/.local/bin/lua5.1
+
 - name: lua-language-server
   ansible.builtin.import_tasks: lua-language-server.yaml
 
@@ -34,6 +63,8 @@
       - fswatch
       - nodejs-bash-language-server
       - black
+      - luarocks
+      - luajit
     state: present
   tags:
     - neovim

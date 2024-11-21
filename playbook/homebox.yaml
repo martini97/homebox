@@ -64,3 +64,16 @@
 
     - name: neovim
       ansible.builtin.import_tasks: neovim/main.yaml
+
+    # foot has some conflicts with neovim, skipping for now
+    # this has to after neovim as both install utf8proc, but neovim needs the git version
+    # - name: install foot
+    #   become: true
+    #   become_user: root
+    #   ansible.builtin.dnf5:
+    #     name:
+    #       - foot
+    #       - foot-terminfo
+    #     state: present
+    #   tags:
+    #     - foot
