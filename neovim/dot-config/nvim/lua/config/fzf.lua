@@ -29,7 +29,7 @@ vim.keymap.set(
 vim.keymap.set("n", "<leader>ff", function()
 	local count = vim.v.count or 0
 	local cwd = vim.fn.getcwd(-1, count < 1 and 0 or -1)
-	require("fzf-lua").files({ cwd = cwd })
+	require("fzf-lua").files({ cwd = cwd, cmd = "fd" })
 end, { desc = "[fzf-lua] find files (global cwd)" })
 
 vim.keymap.set("n", "<leader>/", ":<c-u>FzfLua blines<cr>", { desc = "[fzf-lua] blines" })
