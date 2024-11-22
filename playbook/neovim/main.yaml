@@ -46,8 +46,12 @@
   args:
     creates: ~/.local/bin/lua5.1
 
-- name: lua-language-server
-  ansible.builtin.import_tasks: lua-language-server.yaml
+- name: install lua-language-server
+  ansible.builtin.shell: "{{ playbook_dir }}/../scripts/install-lua-ls.sh"
+  args:
+    creates: ~/.local/bin/lua-language-server
+  tags:
+    - neovim
 
 - name: install neovim tools
   become: true
