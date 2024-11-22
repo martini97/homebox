@@ -17,6 +17,13 @@ local function lsp_on_attach(ev)
 		vim.keymap.set(mode, lhs, rhs, opts)
 	end
 
+	---@param fn fun(bufnr: integer)
+	local buf_call = function(fn)
+		return function()
+			return fn(ev.buf)
+		end
+	end
+
 	vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 
 	map("gd", vim.lsp.buf.definition, "[lsp] definition")
@@ -28,9 +35,11 @@ local function lsp_on_attach(ev)
 	end
 
 	if client:supports_method(methods.textDocument_inlayHint, ev.buf) then
-		map("<leader>th", function()
-			lsp_helpers.toggle_inlay_hints(ev.buf)
-		end, "[lsp] toggle inlay hints")
+		map("<leader>th", buf_call(lsp_helpers.toggle_inlay_hints), "[lsp] toggle inlay hints")
+	end
+
+	if client:supports_method(methods.textDocument_codeLens, ev.buf) then
+		map("<leader>tl", buf_call(lsp_helpers.toggle_inlay_hints), "[lsp] toggle code lens")
 	end
 
 	if client:supports_method(methods.textDocument_completion, ev.buf) then
