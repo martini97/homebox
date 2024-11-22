@@ -48,4 +48,17 @@ return {
 			ms = i(1, "ms"),
 		})
 	),
+	s({ trig = "inj", name = "injectable", description = "Injectable" }, {
+		i(3, [[import { Injectable } from "@nestjs/common";]]),
+		t({
+			"",
+			"",
+			[[@Injectable()]],
+			[[export class ]],
+		}),
+		i(1, "ClsName"),
+		t({ " {", "\tconstructor(", "\t\t" }),
+		i(2, "provider"),
+		t({ "", "\t) {}", "}" }),
+	}),
 }
