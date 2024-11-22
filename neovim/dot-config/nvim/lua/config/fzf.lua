@@ -1,6 +1,8 @@
 require("fzf-lua").setup({})
 require("fzf-lua").register_ui_select()
 
+local utils = require("core.utils")
+
 local keymaps = {
 	h = "helptags",
 	b = "buffers",
@@ -28,8 +30,9 @@ vim.keymap.set(
 
 vim.keymap.set("n", "<leader>ff", function()
 	local count = vim.v.count or 0
-	local cwd = vim.fn.getcwd(-1, count < 1 and 0 or -1)
-	require("fzf-lua").files({ cwd = cwd, cmd = "fd" })
+	local scope = count == 0 and "tab" or count == 1 and "global" or "buffer"
+	local cwd = utils.get_cwd({ scope = scope })
+	require("fzf-lua").files({ cwd = cwd, cmd = "fd --hidden" })
 end, { desc = "[fzf-lua] find files (global cwd)" })
 
 vim.keymap.set("n", "<leader>/", ":<c-u>FzfLua blines<cr>", { desc = "[fzf-lua] blines" })
