@@ -1,4 +1,8 @@
 local lsp_util = require("lspconfig.util")
+local lsp_core = require("core.lsp.completion")
+local lsp_helpers = require("core.lsp.helpers")
+
+local methods = vim.lsp.protocol.Methods
 
 ---@param ev { buf: integer, data: { client_id: integer } }
 local function lsp_on_attach(ev)
@@ -23,14 +27,18 @@ local function lsp_on_attach(ev)
 		return
 	end
 
-	if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, ev.buf) then
+	if client:supports_method(methods.textDocument_inlayHint, ev.buf) then
 		map("<leader>th", function()
-			vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf }))
+			lsp_helpers.toggle_inlay_hints(ev.buf)
 		end, "[lsp] toggle inlay hints")
 	end
 
-	if client:supports_method(vim.lsp.protocol.Methods.textDocument_completion, ev.buf) then
-		vim.lsp.completion.enable(true, ev.data.client_id, ev.buf, { autotrigger = false })
+	if client:supports_method(methods.textDocument_completion, ev.buf) then
+		lsp_core.enable_completion(client, ev.buf)
+
+		if client:supports_method(methods.completionItem_resolve, ev.buf) then
+			lsp_core.enable_completion_docs(client, ev.buf)
+		end
 	end
 end
 

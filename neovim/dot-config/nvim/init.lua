@@ -38,7 +38,7 @@ vim.opt.grepprg = "rg --vimgrep --smart-case --hidden"
 vim.opt.grepformat = "%f:%l:%c:%m"
 vim.opt.inccommand = "split"
 vim.opt.scrolloff = 10
-vim.opt.completeopt = { "menu", "menuone", "noselect", "popup" }
+vim.opt.completeopt = { "menu", "menuone", "noselect", "popup", "fuzzy" }
 vim.opt.wildmode = { "longest:full", "full" }
 vim.opt.wildoptions:append("fuzzy")
 vim.opt.spelllang = "en_us"
