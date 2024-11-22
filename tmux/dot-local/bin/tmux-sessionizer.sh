@@ -47,8 +47,15 @@ tmux_create_session() {
   tmux_hydrate "${session}" "${cwd}"
 }
 
+list_targets() {
+  (
+    fd . "${TARGETS[@]}" --min-depth 1 --max-depth 1 --type directory
+    zoxide query --list
+  ) | sed 's:/*$::' | awk '!a[$0]++'
+}
+
 pick_target() {
-  fd . "${TARGETS[@]}" --min-depth 1 --max-depth 1 --type directory | fzf --tmux
+  list_targets | (fzf --tmux || true)
 }
 
 main() {
