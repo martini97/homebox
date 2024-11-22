@@ -65,6 +65,13 @@
     - name: neovim
       ansible.builtin.import_tasks: neovim/main.yaml
 
+    - name: install process-compose
+      ansible.builtin.shell: "{{ playbook_dir }}/../scripts/install-process-compose.sh"
+      args:
+        creates: ~/.local/bin/process-compose
+      tags:
+        - process-compose
+
     # foot has some conflicts with neovim, skipping for now
     # this has to after neovim as both install utf8proc, but neovim needs the git version
     # - name: install foot
