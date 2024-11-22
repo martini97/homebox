@@ -4,7 +4,7 @@ local ls = require("luasnip")
 ls.setup()
 require("luasnip.loaders.from_lua").load({ paths = { snip_dir } })
 
---- NOTE: this fixes the snippet expansion from the ominfunc
+--- NOTE: this fixes the snippet expansion from the omnifunc
 vim.snippet.expand = ls.lsp_expand
 
 local function feedkeys(keys)

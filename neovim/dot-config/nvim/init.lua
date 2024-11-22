@@ -176,3 +176,5 @@ end, { desc = "next quickfix entry" })
 require("amake").setup()
 
 require("config.lazy")
+
+vim.o.completefunc = "v:lua.require'core.snippets'.completefunc"

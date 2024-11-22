@@ -25,16 +25,18 @@ configs.setup({
 	indent = { enable = true },
 })
 
-vim.api.nvim_create_autocmd("BufEnter", {
-	group = vim.api.nvim_create_augroup("UserTSCompletefunc", { clear = true }),
-	callback = function(ev)
-		local has_parser = require("nvim-treesitter.parsers").has_parser()
-		if not has_parser then
-			return
-		end
-		vim.bo[ev.buf].completefunc = "v:lua.vim.treesitter.query.omnifunc"
-	end,
-})
+-- NOTE: I've replaced this with the luasnip completefunc
+-- @see neovim/dot-config/nvim/lua/config/luasnip.lua
+-- vim.api.nvim_create_autocmd("BufEnter", {
+-- 	group = vim.api.nvim_create_augroup("UserTSCompletefunc", { clear = true }),
+-- 	callback = function(ev)
+-- 		local has_parser = require("nvim-treesitter.parsers").has_parser()
+-- 		if not has_parser then
+-- 			return
+-- 		end
+-- 		vim.bo[ev.buf].completefunc = "v:lua.vim.treesitter.query.omnifunc"
+-- 	end,
+-- })
 
 vim.wo.foldmethod = "expr"
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
