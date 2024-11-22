@@ -72,6 +72,7 @@ local servers = {
 	},
 	eslint = {},
 	volar = { root_dir = lsp_util.root_pattern("vue.config.js", "package.json", ".git") },
+	bashls = {},
 }
 
 for name, config in pairs(servers) do
