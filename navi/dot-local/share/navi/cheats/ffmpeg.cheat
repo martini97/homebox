@@ -1,0 +1,8 @@
+% ffmpeg
+
+$ input: ls
+$ output_ext: echo -e "gif\nmp4\n"
+$ output: echo "<input>" | sed -E 's/(.*)\..*/\1.<output_ext>/g'
+
+# translate
+ffmpeg -i "<input>" "<output>"
