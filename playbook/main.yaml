@@ -72,6 +72,23 @@
           - dev.aunetx.deezer
         state: present
 
+    - name: flatpak | uninstall packages
+      community.general.flatpak:
+        name:
+          # the flatpak version of solaar does not work with logitech bolt
+          - io.github.pwr_solaar.solaar
+        state: absent
+
+    - name: logitech | solaar stuff
+      become: true
+      become_user: root
+      ansible.builtin.dnf5:
+        name:
+          - solaar
+          - solaar-doc
+          - solaar-udev
+        state: present
+
     - name: keyd | setup
       ansible.builtin.import_tasks: tasks/keyd.yml
       tags: ['keyd']
