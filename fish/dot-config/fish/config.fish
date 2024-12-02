@@ -14,6 +14,12 @@ fish_add_path "$HOME/.cargo/bin"
 fish_add_path "$HOME/go/bin"
 fish_add_path "$HOME/.lumper/bin"
 
+if command --query eza
+    set -g __fish_ls_command eza
+else if command --query exa
+    set -g __fish_ls_command exa
+end
+
 alias hb="homebox"
 
 # after this point we should only execute if on an interactive shell
