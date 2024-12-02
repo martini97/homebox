@@ -6,11 +6,20 @@ STOW_STAMPS := $(addprefix $(STAMP_DIR)/,$(STOW_TARGETS))
 
 PLAYBOOK := $(CURDIR)/playbook/main.yaml
 
+.PHONY: playbook
+all: pull playbook stow
+
+
 stow: $(STOW_TARGETS)
 
 .PHONY: playbook
 playbook:
 	@ansible-playbook playbook/main.yaml --ask-become-pass
+
+.PHONY: pull
+pull:
+	@git pull --autostash
+
 
 $(STOW_TARGETS): %: $(STAMP_DIR)/%
 
