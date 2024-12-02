@@ -62,6 +62,10 @@
           - pgcli
           - navi
           - awscli2
+          - httpie
+          - procs
+          - podman-docker
+          - podman-compose
         state: present
 
     - name: flatpak | install packages
