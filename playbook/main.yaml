@@ -61,6 +61,7 @@
           - golang
           - pgcli
           - navi
+          - awscli2
         state: present
 
     - name: flatpak | install packages
