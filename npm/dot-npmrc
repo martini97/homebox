@@ -1,0 +1,5 @@
+//npm.fury.io/loadsmart/:_authToken=${LOADSMART_FURY_AUTH}
+//npm-proxy.fury.io/loadsmart/:_authToken=${LOADSMART_FURY_AUTH}
+@loadsmart:registry=https://npm-proxy.fury.io/loadsmart/
+
+prefix=~/.local/
