@@ -186,3 +186,9 @@ require("amake").setup()
 require("config.lazy")
 
 vim.o.completefunc = "v:lua.require'core.snippets'.completefunc"
+
+do --- beancount
+	vim.filetype.add({
+		extension = { beancount = "beancount", bean = "beancount" },
+	})
+end

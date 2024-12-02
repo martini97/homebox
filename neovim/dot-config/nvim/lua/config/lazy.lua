@@ -207,5 +207,11 @@ require("lazy").setup({
 			end,
 		},
 		--- }}}
+		--- beancount {{{
+		{
+			"nathangrigg/vim-beancount",
+			ft = "beancount",
+		},
+		--- }}}
 	},
 })
