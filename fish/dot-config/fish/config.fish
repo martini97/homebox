@@ -17,27 +17,12 @@ fish_add_path "$HOME/.lumper/bin"
 alias hb="homebox"
 
 if status is-interactive
-    if command --query zoxide
-        zoxide init fish | source
-    end
+    fish_source_cmd zoxide init fish
+    fish_source_cmd navi widget fish
 
     set -l brew_bin "/home/linuxbrew/.linuxbrew/bin/brew"
-    if test -x "$brew_bin"
-        "$brew_bin" shellenv | source
-
-        set -l brew_prefix ("$brew_bin" --prefix)
-        set -l brew_fishd "$brew_prefix/share/fish"
-
-        if test -d "$brew_fishd/completions"
-            set -p fish_complete_path "$brew_fishd/completions"
-        end
-
-        if test -d "$brew_fishd/vendor_completions.d"
-            set -p fish_complete_path "$brew_fishd/vendor_completions.d"
-        end
-    end
-
-    if command --query navi
-        navi widget fish | source
-    end
+    set -l brew_fishd "/home/linuxbrew/.linuxbrew/share/fish"
+    fish_source_cmd "$brew_bin" shellenv
+    fish_add_compl -p "$brew_fishd/completions"
+    fish_add_compl -p "$brew_fishd/vendor_completions.d"
 end
