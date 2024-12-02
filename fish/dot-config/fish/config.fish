@@ -16,13 +16,17 @@ fish_add_path "$HOME/.lumper/bin"
 
 alias hb="homebox"
 
-if status is-interactive
-    fish_source_cmd zoxide init fish
-    fish_source_cmd navi widget fish
+# after this point we should only execute if on an interactive shell
+status is-interactive; or exit 0
 
-    set -l brew_bin "/home/linuxbrew/.linuxbrew/bin/brew"
-    set -l brew_fishd "/home/linuxbrew/.linuxbrew/share/fish"
-    fish_source_cmd "$brew_bin" shellenv
-    fish_add_compl -p "$brew_fishd/completions"
-    fish_add_compl -p "$brew_fishd/vendor_completions.d"
-end
+fish_source_cmd zoxide init fish
+fish_source_cmd navi widget fish
+
+set -l brew_bin "/home/linuxbrew/.linuxbrew/bin/brew"
+set -l brew_fishd "/home/linuxbrew/.linuxbrew/share/fish"
+fish_source_cmd "$brew_bin" shellenv
+fish_add_compl -p "$brew_fishd/completions"
+fish_add_compl -p "$brew_fishd/vendor_completions.d"
+
+fish_source_file "/usr/share/fzf/shell/key-bindings.fish"
+fish_call_fn fzf_key_bindings
