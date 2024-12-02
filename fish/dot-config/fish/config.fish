@@ -1,10 +1,18 @@
-fish_add_path "$HOME/.local/bin"
+set -gx EDITOR nvim
+set -gx NVIM_LISTEN_ADDRESS (_nvim_listen_addr)
+
+# based on https://xdgbasedirectoryspecification.com/
+# and https://gist.github.com/roalcantara/107ba66dfa3b9d023ac9329e639bc58c
+set -gx XDG_CACHE_HOME "$HOME/.cache"
+set -gx XDG_CONFIG_HOME "$HOME/.config"
+set -gx XDG_DATA_HOME "$HOME/.local/share"
+set -gx XDG_BIN_HOME "$HOME/.local/bin"
+set -gx XDG_STATE_HOME "$HOME/.local/state"
+
+fish_add_path "$XDG_BIN_HOME"
 fish_add_path "$HOME/.cargo/bin"
 fish_add_path "$HOME/go/bin"
 fish_add_path "$HOME/.lumper/bin"
-
-set -gx EDITOR nvim
-set -gx NVIM_LISTEN_ADDRESS (_nvim_listen_addr)
 
 alias hb="homebox"
 
