@@ -28,5 +28,4 @@ fish_source_cmd "$brew_bin" shellenv
 fish_add_compl -p "$brew_fishd/completions"
 fish_add_compl -p "$brew_fishd/vendor_completions.d"
 
-fish_source_file "/usr/share/fzf/shell/key-bindings.fish"
-fish_call_fn fzf_key_bindings
+fish_call_fn -f "/usr/share/fzf/shell/key-bindings.fish" fzf_key_bindings

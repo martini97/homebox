@@ -1,19 +1,15 @@
 function fish_add_compl --description "Add paths to the fish complete path"
-    argparse p/prepend v/verbose n/dry-run -- $argv
+    argparse p/prepend -- $argv
     or return
 
     for path in $argv
         set -l p (builtin realpath -s -- $path 2>/dev/null)
+
         if not test -d "$p"
-            if set -q _flag_verbose
-                printf (_ "Skipping non-existent path: %s\n") "$p"
-            end
+            __fish_add_compl_echoerr "skipping non-existent path: $p"
             continue
-        end
-        if contains -- $p $fish_complete_path
-            if set -q _flag_verbose
-                printf (_ "Skipping path already in completion: %s\n") "$p"
-            end
+        else if contains -- $p $fish_complete_path
+            __fish_add_compl_echoerr "skipping path already in completion: $p"
             continue
         end
 
@@ -23,4 +19,8 @@ function fish_add_compl --description "Add paths to the fish complete path"
             set -a fish_complete_path "$p"
         end
     end
+end
+
+function __fish_add_compl_echoerr
+    echo "[fish_add_compl] $argv" >&2
 end
