@@ -66,6 +66,14 @@
           - procs
           - podman-docker
           - podman-compose
+          # playwright deps {{{
+          - libicu
+          - libjpeg-turbo
+          - libwebp
+          - flite
+          - pcre
+          - libffi
+          # }}}
         state: present
 
     - name: flatpak | install packages
