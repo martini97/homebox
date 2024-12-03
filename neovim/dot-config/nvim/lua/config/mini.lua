@@ -33,7 +33,8 @@ require("mini.indentscope").setup({
 })
 
 require("mini.misc").setup({})
-require("mini.misc").setup_termbg_sync()
+-- this is causing issues with tmux+kitty
+-- require("mini.misc").setup_termbg_sync()
 require("mini.misc").setup_restore_cursor()
 
 vim.api.nvim_create_user_command("Bdelete", function()
