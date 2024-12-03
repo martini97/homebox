@@ -50,10 +50,10 @@ do -- options
 	vim.opt.mouse = ""
 	vim.opt.hidden = true
 	vim.opt.bufhidden = "hide"
+
 	vim.opt.foldmethod = "expr"
-	vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-	-- vim.opt.foldmethod = "manual"
-	vim.opt.foldtext = ""
+	vim.opt.foldexpr = "v:lua.vim.lsp.foldexpr()"
+	vim.opt.foldtext = "v:lua.vim.lsp.foldtext()"
 	vim.opt.foldcolumn = "auto"
 end
 
