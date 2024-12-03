@@ -56,9 +56,7 @@ local function completion_item_resolve_handler(client, complete_info)
 		end
 
 		local docs = vim.tbl_get(result, "documentation", "value")
-		if not docs then
-			return
-		end
+			or string.format("No documentation found for `%s`", vim.tbl_get(result, "label") or "unknown")
 
 		local wininfo = vim.api.nvim__complete_set(complete_info.selected, { info = format_docs(client, docs) })
 		if vim.tbl_isempty(wininfo) or not vim.api.nvim_win_is_valid(wininfo.winid) then
@@ -96,16 +94,24 @@ end
 
 ---Format the lsp item into a completion item
 ---@param item lsp.CompletionItem
-local function completion_convert(item)
+---@param client vim.lsp.Client
+local function completion_convert(item, client)
+	local name = vim.tbl_get(client or {}, "name")
 	local kind = kinds[item.kind] or "Unknown"
-	return { word = item.label, menu = "[lsp]", kind = kind }
+	local menu = name and "[lsp(" .. name .. ")]" or "[lsp]"
+	return { word = item.label, menu = menu, kind = kind }
 end
 
 ---Enable builtin lsp completion
 ---@param client vim.lsp.Client
 ---@param bufnr integer
 function M.enable_completion(client, bufnr)
-	vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = false, convert = completion_convert })
+	vim.lsp.completion.enable(true, client.id, bufnr, {
+		autotrigger = false,
+		convert = function(item)
+			return completion_convert(item, client)
+		end,
+	})
 end
 
 ---Enable documentation on builtin completion
