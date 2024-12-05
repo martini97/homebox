@@ -53,7 +53,7 @@ do -- options
 
 	vim.opt.foldmethod = "expr"
 	vim.opt.foldexpr = "v:lua.vim.lsp.foldexpr()"
-	vim.opt.foldtext = "v:lua.vim.lsp.foldtext()"
+	vim.opt.foldtext = ""
 	vim.opt.foldcolumn = "auto"
 end
 
