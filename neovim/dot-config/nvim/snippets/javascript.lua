@@ -29,7 +29,7 @@ return {
 			var_repeated = rep(1),
 		})
 	),
-	postfix(".pd", {
+	postfix(".pp", {
 		f(function(_, parent)
 			local fname = vim.fn.expand("%:.:r")
 			local lnum = parent.env.TM_LINE_NUMBER
