@@ -43,29 +43,33 @@
       become_user: root
       ansible.builtin.dnf5:
         name:
+          # cli tools {{{
           - fzf
           - ripgrep
           - fd-find
           - eza
           - bat
-          - fish
-          - tmux
           - zoxide
           - jq
           - htop
           - nvtop
-          - ansible-lint
           - wl-clipboard
           - btop
           - htop
-          - golang
           - pgcli
           - navi
-          - awscli2
           - httpie
           - procs
+          # }}}
+          - fish
+          - tmux
+          - ansible-lint
+          - golang
+          - awscli2
+          # containers {{{
           - podman-docker
           - podman-compose
+          # }}}
           # playwright deps {{{
           - libicu
           - libjpeg-turbo
@@ -74,6 +78,11 @@
           - pcre
           - libffi
           # }}}
+          # steam {{{
+          - steam
+          - steam-devices
+          # }}}
+          - lutris
         state: present
 
     - name: flatpak | install packages
