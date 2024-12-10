@@ -1,5 +1,5 @@
 set -gx EDITOR nvim
-set -gx NVIM_LISTEN_ADDRESS (_nvim_listen_addr)
+# set -gx NVIM_LISTEN_ADDRESS (_nvim_listen_addr)
 
 # based on https://xdgbasedirectoryspecification.com/
 # and https://gist.github.com/roalcantara/107ba66dfa3b9d023ac9329e639bc58c
