@@ -60,6 +60,7 @@
           - navi
           - httpie
           - procs
+          - gh
           # }}}
           - fish
           - tmux
