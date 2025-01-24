@@ -243,7 +243,7 @@ do --- lazy
 			{
 				"CopilotC-Nvim/CopilotChat.nvim",
 				dependencies = {
-					{ "nvim-lua/plenary.nvim" },
+					{ "nvim-lua/plenary.nvim", branch = "master" },
 					{ "zbirenbaum/copilot.lua", cmd = "Copilot", event = "InsertEnter", opts = {} },
 				},
 				build = "make tiktoken",
