@@ -337,6 +337,14 @@ do --- lazy
 					},
 				},
 			},
+			{
+				"linrongbin16/gitlinker.nvim",
+				cmd = "GitLink",
+				opts = {},
+				keys = {
+					{ "<leader>gy", vim.cmd.GitLink, mode = { "n", "v" }, desc = "[gitlink] yank" },
+				},
+			},
 			--- }}}
 			--- lint {{{
 			{
