@@ -29,6 +29,7 @@
       - shfmt
       - yamllint
       - ansible-lint
+      - lynx
   tags: ['neovim']
 
 - name: neovim | install hererocks
