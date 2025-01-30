@@ -1,0 +1,6 @@
+% aws
+
+# sso login
+aws sso --profile <profile> login
+
+$ profile: aws configure list-profiles

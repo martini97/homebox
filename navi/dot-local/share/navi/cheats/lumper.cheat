@@ -1,0 +1,41 @@
+% lumper
+
+# secrets update
+lumper secrets v2 update \
+  --aws-profile <aws_profile> \
+  --env <environment> \
+  --project <project>
+
+# secrets retrieve
+lumper secrets v2 retrieve \
+  --aws-profile <aws_profile> \
+  --env <environment> \
+  --project <project>
+
+# run
+lumper run \
+  --cpu <cpu> \
+  --memory <memory> \
+  --time-to-live <time_to_live> \
+  --env <environment> \
+  --project <project> \
+  --namespace <namespace> \
+  --cluster-role <cluster_role> \
+  -- <command>
+
+# pghero
+lumper pghero \
+  --cluster-role <cluster_role> \
+  --env <environment> \
+  --namespace <namespace> \
+  --project <project>
+
+$ project: echo -e "opendock-neutron\nalice\n"
+$ environment: echo -e "production\nstaging\nqa\nsandbox"
+$ time_to_live: echo -e "1h\n"
+$ namespace: echo -e "opendock\n"
+$ cluster_role: echo -e "main\nopendock"
+$ command: echo -e "bash\n"
+$ cpu: echo -e "400\n"
+$ memory: echo -e "512\n"
+$ aws_profile: printf "Fetching aws profiles..." >&2; aws configure list-profiles
