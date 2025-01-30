@@ -179,6 +179,18 @@
       ansible.builtin.pip:
         name: beancount
 
+    - name: music | install system packages
+      become: true
+      become_user: root
+      ansible.builtin.dnf5:
+        name:
+          - strawberry
+          - beets
+          - beets-plugins
+          - beets-doc
+          - nicotine+
+      tags: ['music']
+
     - name: ghostty
       block:
         - name: ghostty | enable coprs
@@ -197,4 +209,3 @@
     - name: hyprland | setup
       ansible.builtin.import_tasks: tasks/hyprland.yml
       tags: ['hyprland']
-
