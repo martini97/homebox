@@ -24,6 +24,7 @@
           - stow
           - cargo
           - pinentry
+          - pipx
 
     - name: pre_tasks | install linuxbrew
       ansible.builtin.import_tasks: tasks/linuxbrew.yml
@@ -91,6 +92,7 @@
           - steam-devices
           # }}}
           - lutris
+          - qutebrowser
         state: present
 
     - name: tmux | setup tmux
