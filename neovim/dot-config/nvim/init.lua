@@ -321,6 +321,8 @@ do --- lazy
 					vim.g.git_worktree_loglevel = vim.log.levels.INFO
 				end,
 			},
+			{ "tpope/vim-fugitive" },
+			{ "tpope/vim-rhubarb" },
 			{
 				"NeogitOrg/neogit",
 				dependencies = { "nvim-lua/plenary.nvim", "sindrets/diffview.nvim", "ibhagwan/fzf-lua" },
