@@ -71,7 +71,6 @@
           - gh
           # }}}
           - fish
-          - tmux
           - ansible-lint
           - golang
           - awscli2
@@ -93,6 +92,26 @@
           # }}}
           - lutris
         state: present
+
+    - name: tmux | setup tmux
+      block:
+        - name: tmux | install tmux
+          become: true
+          become_user: root
+          ansible.builtin.dnf5:
+            name: tmux
+            state: present
+        - name: tmux | install tmuxp
+          ansible.builtin.pip:
+            name: tmuxp
+
+    - name: misc | uninstall system packages
+      become: true
+      become_user: root
+      ansible.builtin.dnf5:
+        name:
+          - wtype
+        state: absent
 
     - name: flatpak | install packages
       community.general.flatpak:

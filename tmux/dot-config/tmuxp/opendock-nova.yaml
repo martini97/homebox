@@ -1,0 +1,18 @@
+session_name: opendock-nova
+start_directory: ~/git/loadsmart/opendock-nova
+windows:
+  - window_name: editor
+    panes:
+      - nvim
+  - window_name: proc
+    layout: tiled
+    shell_command_before:
+      - git fetch origin --all
+      - podman compose --env-file .env --file (pwd)/docker/nova_db/nova.db.docker-compose.yml up --build --detach
+      - podman compose --env-file .env --file (pwd)/docker/redis/nova.redis.docker-compose.yml up --build --detach
+    panes:
+      - npm -C libs/satellite run dev:core-lib
+      - npm run neutron:swc:dev
+      - npm run mock:google-geocoding
+      - npm run mock:smtp
+      - npm -C apps/helios run dev
