@@ -172,3 +172,7 @@
         force: false
         mode: 0555
       tags: ['podman']
+
+    - name: beancount | install beancount
+      ansible.builtin.pip:
+        name: beancount
