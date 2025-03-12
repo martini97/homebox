@@ -370,6 +370,28 @@ do --- lazy
 					require("config.lsp")
 				end,
 			},
+			{
+				"pmizio/typescript-tools.nvim",
+				dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+				ft = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+				opts = {},
+				config = function()
+					require("typescript-tools").setup({
+						on_attach = function(client, _bufnr)
+							client.server_capabilities.documentFormattingProvider = false
+							client.server_capabilities.documentRangeFormattingProvider = false
+						end,
+						filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+						settings = {
+							tsserver_plugins = { "@vue/typescript-plugin" },
+							jsx_close_tag = {
+								enable = true,
+								filetypes = { "javascriptreact", "typescriptreact" },
+							},
+						},
+					})
+				end,
+			},
 			--- }}}
 			--- mini {{{
 			{
