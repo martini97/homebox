@@ -181,8 +181,6 @@ do -- vim-cool
 	})
 end
 
-require("amake").setup()
-
 vim.o.completefunc = "v:lua.require'core.snippets'.completefunc"
 
 do --- beancount
@@ -482,6 +480,22 @@ do --- lazy
 					},
 				},
 				opts_extend = { "sources.default" },
+			},
+			--- }}}
+			--- undotree {{{
+			{
+				"mbbill/undotree",
+				config = function()
+					local undo_dir = vim.fs.joinpath(vim.fn.stdpath("state"), "undo")
+					if not vim.uv.fs_stat(undo_dir) then
+						vim.fn.mkdir(undo_dir, "p", "0700")
+					end
+
+					vim.opt.undodir = undo_dir
+					vim.opt.undofile = true
+
+					vim.keymap.set("n", "<leader>tu", vim.cmd.UndotreeToggle)
+				end,
 			},
 			--- }}}
 		},
