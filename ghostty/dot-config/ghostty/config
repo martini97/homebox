@@ -1,0 +1,13 @@
+# NOTE:
+# docs:
+# ghostty +show-config --default --docs | nvim
+
+font-family = "JetBrains Mono"
+font-size = 14
+
+theme = light:Material,dark:MaterialDesignColors
+
+maximize = true
+
+window-decoration = false
+gtk-adwaita = false
