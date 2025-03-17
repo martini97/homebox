@@ -4,6 +4,8 @@ git:
     - master
     - main
     - staging
+  commit:
+    signOff: true
 
 customCommands:
   - key: 'F'

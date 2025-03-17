@@ -6,6 +6,7 @@
 [alias]
   st = status
   ll = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+  cm = commit --gpg-sign --signoff
 
 [core]
   editor = nvim
@@ -32,6 +33,9 @@
 [commit]
   verbose = true
   gpgsign = true
+
+[format]
+  signOff = true
 
 [includeIf "hasconfig:remote.*.url:https://github.com:**/**"]
   path = config.github

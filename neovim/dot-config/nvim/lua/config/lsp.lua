@@ -13,9 +13,7 @@ local servers = {
 	bashls = {},
 	volar = {
 		root_dir = lsp_util.root_pattern("vue.config.js", "package.json", ".git"),
-		init_options = {
-			typescript = { tsdk = typescript_sdk },
-		},
+		init_options = { typescript = { tsdk = typescript_sdk } },
 		on_new_config = function(new_config, new_root_dir)
 			local lib_path = vim.fs.find("node_modules/typescript/lib", { path = new_root_dir, upward = true })[1]
 			if lib_path then

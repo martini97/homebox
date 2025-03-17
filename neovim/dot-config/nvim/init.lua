@@ -242,7 +242,6 @@ do --- lazy
 			--- copilot {{{
 			{
 				"CopilotC-Nvim/CopilotChat.nvim",
-				branch = "canary",
 				dependencies = {
 					{ "nvim-lua/plenary.nvim" },
 					{ "zbirenbaum/copilot.lua", cmd = "Copilot", event = "InsertEnter", opts = {} },
@@ -384,6 +383,7 @@ do --- lazy
 						filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
 						settings = {
 							tsserver_plugins = { "@vue/typescript-plugin" },
+							expose_as_code_action = "all",
 							jsx_close_tag = {
 								enable = true,
 								filetypes = { "javascriptreact", "typescriptreact" },
@@ -452,15 +452,34 @@ do --- lazy
 				dependencies = { "L3MON4D3/LuaSnip", version = "v2.*" },
 				opts = {
 					snippets = { preset = "luasnip" },
+					signature = { enabled = true },
 					keymap = { preset = "default" },
 					appearance = {
 						use_nvim_cmp_as_default = true,
 						nerd_font_variant = "mono",
 					},
-					sources = {
-						default = { "lsp", "path", "snippets", "buffer" },
-					},
+					sources = { default = { "lsp", "path", "snippets", "buffer" } },
 					fuzzy = { implementation = "prefer_rust_with_warning" },
+					completion = {
+						documentation = { auto_show = true, auto_show_delay_ms = 500 },
+						menu = {
+							draw = {
+								columns = { { "label", "label_description", gap = 1 }, { "kind" } },
+								components = {
+									kind = {
+										ellipsis = false,
+										text = function(ctx)
+											return ctx.kind
+										end,
+										highlight = function(ctx)
+											local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
+											return hl
+										end,
+									},
+								},
+							},
+						},
+					},
 				},
 				opts_extend = { "sources.default" },
 			},
