@@ -50,6 +50,8 @@ do -- options
 	vim.opt.mouse = ""
 	vim.opt.hidden = true
 	vim.opt.bufhidden = "hide"
+	vim.opt.splitright = true
+	vim.opt.splitbelow = true
 
 	vim.opt.foldmethod = "expr"
 	vim.opt.foldexpr = "v:lua.vim.lsp.foldexpr()"
