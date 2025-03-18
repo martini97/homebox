@@ -11,3 +11,5 @@ maximize = true
 
 window-decoration = false
 gtk-adwaita = false
+
+shell-integration = fish
