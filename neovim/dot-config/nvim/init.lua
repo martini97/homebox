@@ -500,6 +500,63 @@ do --- lazy
 				end,
 			},
 			--- }}}
+			--- harpoon {{{
+			{
+				"ThePrimeagen/harpoon",
+				branch = "harpoon2",
+				dependencies = { "nvim-lua/plenary.nvim" },
+				config = function()
+					local harpoon = require("harpoon")
+					harpoon:setup()
+
+					vim.keymap.set("n", "<leader>ha", function()
+						harpoon:list():add()
+					end, { desc = "[harpoon] add" })
+					vim.keymap.set("n", "<c-h>a", function()
+						harpoon:list():add()
+					end, { desc = "[harpoon] add" })
+
+					vim.keymap.set("n", "<leader>hm", function()
+						harpoon.ui:toggle_quick_menu(harpoon:list())
+					end, { desc = "[harpoon] toggle quick menu" })
+					vim.keymap.set("n", "<c-h>m", function()
+						harpoon.ui:toggle_quick_menu(harpoon:list())
+					end, { desc = "[harpoon] toggle quick menu" })
+
+					vim.keymap.set("n", "<leader>hp", function()
+						harpoon:list():prev()
+					end, { desc = "[harpoon] previous" })
+					vim.keymap.set("n", "<c-h>p", function()
+						harpoon:list():prev()
+					end, { desc = "[harpoon] previous" })
+
+					vim.keymap.set("n", "<leader>hn", function()
+						harpoon:list():next()
+					end, { desc = "[harpoon] next" })
+					vim.keymap.set("n", "<c-h>n", function()
+						harpoon:list():next()
+					end, { desc = "[harpoon] next" })
+
+					for i = 1, 10 do
+						vim.keymap.set("n", "<leader>h" .. tostring(i % 10), function()
+							harpoon:list():select(i)
+						end, { desc = "[harpoon] select " .. tostring(i) .. " nth" })
+						vim.keymap.set("n", "<c-h>" .. tostring(i % 10), function()
+							harpoon:list():select(i)
+						end, { desc = "[harpoon] select " .. tostring(i) .. " nth" })
+					end
+
+					for i, k in ipairs({ "h", "j", "k", "l", ";" }) do
+						vim.keymap.set("n", "<leader>h" .. k, function()
+							harpoon:list():select(i)
+						end, { desc = "[harpoon] select " .. tostring(i) .. " nth" })
+						vim.keymap.set("n", "<c-h>" .. k, function()
+							harpoon:list():select(i)
+						end, { desc = "[harpoon] select " .. tostring(i) .. " nth" })
+					end
+				end,
+			},
+			--- }}}
 		},
 	})
 end
