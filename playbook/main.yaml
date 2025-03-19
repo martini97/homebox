@@ -193,3 +193,8 @@
           ansible.builtin.dnf5:
             name: ghostty
             state: present
+
+    - name: hyprland | setup
+      ansible.builtin.import_tasks: tasks/hyprland.yml
+      tags: ['hyprland']
+

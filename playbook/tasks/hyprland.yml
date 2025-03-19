@@ -1,0 +1,96 @@
+# NOTE: this requires some kernel parameters for nvidia stuff:
+# sudo grubby --update-kernel=ALL --remove-args="quiet"
+# sudo grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau"
+# sudo grubby --update-kernel=ALL --args="modprobe.blacklist=nouveau"
+# sudo grubby --update-kernel=ALL --args="nvidia-drm.modeset=1"
+# sudo grubby --update-kernel=ALL --args="nvidia_drm.fbdev=1"
+---
+- name: hyprland | enable coprs
+  become: true
+  become_user: root
+  community.general.copr:
+    state: enabled
+    name: solopasha/hyprland
+  tags: ['hyprland']
+
+- name: hyprland | install system packages
+  become: true
+  become_user: root
+  ansible.builtin.dnf5:
+    name:
+      - hyprland
+      - hypridle
+      - hyprlock
+      - waybar
+      # XDG stuff
+      - xdg-desktop-portal-hyprland
+      - xdg-desktop-portal-gtk
+      # nvidia stuff
+      - akmod-nvidia
+      - xorg-x11-drv-nvidia-cuda
+      - libva
+      - libva-nvidia-driver
+      - egl-wayland
+      - egl-wayland-devel
+      # sddm
+      - sddm
+      - sddm-breeze
+      - sddm-wayland-generic
+      - qt6-qt5compat
+      - qt6-qtdeclarative
+      - qt6-qtsvg
+      - qt5-wayland
+      - qt6-wayland
+      # bluetooth
+      - bluez
+      - bluez-tools
+      - blueman
+      - python3-cairo
+    state: present
+  tags: ['hyprland']
+
+- name: hyprland | disable old session managers
+  become: true
+  become_user: root
+  ignore_errors: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}.service"
+    state: stopped
+    enabled: false
+  loop:
+    - lightdm
+    - gdm3
+    - gdm
+    - lxdm
+    - lxdm-gtk3
+
+- name: hyprland | set systemd default target
+  become: true
+  become_user: root
+  register: _
+  changed_when: _.rc == 2
+  failed_when: _.rc == 1
+  ansible.builtin.shell: |
+    if [[ "$(systemctl get-default)" == "graphical.target" ]]; then
+      exit 0
+    fi
+    if systemctl set-default graphical.target; then
+      exit 2
+    fi
+    exit 1
+
+- name: hyprland | enable sddm service
+  become: true
+  become_user: root
+  ansible.builtin.systemd_service:
+    name: "sddm.service"
+    state: started
+    enabled: true
+
+- name: hyprland | enable bluetooth service
+  become: true
+  become_user: root
+  ansible.builtin.systemd_service:
+    name: "bluetooth.service"
+    state: started
+    enabled: true
