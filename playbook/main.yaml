@@ -92,6 +92,8 @@
           - steam-devices
           # }}}
           - lutris
+          - protontricks
+          - winetricks
           - qutebrowser
         state: present
 
