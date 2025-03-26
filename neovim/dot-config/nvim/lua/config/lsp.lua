@@ -7,6 +7,24 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	callback = lsp.attach.on_attach,
 })
 
+vim.api.nvim_create_autocmd({ "LspDetach" }, {
+	group = vim.api.nvim_create_augroup("UserLspDetach", {}),
+	callback = function(args)
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
+		local remaining = vim.tbl_filter(function(buf)
+			return buf ~= args.buf
+		end, vim.tbl_get(client or {}, "attached_buffers") or {})
+
+		if not client or #remaining > 0 then
+			return
+		end
+
+		vim.notify("[lsp] stopping lsp client: " .. client.name, vim.log.levels.INFO)
+		client:stop()
+	end,
+	desc = "Stop lsp client when no buffer is attached",
+})
+
 local servers = {
 	pyright = {},
 	eslint = {},
