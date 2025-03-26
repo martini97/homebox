@@ -5,49 +5,49 @@
 # sudo grubby --update-kernel=ALL --args="nvidia-drm.modeset=1"
 # sudo grubby --update-kernel=ALL --args="nvidia_drm.fbdev=1"
 ---
-- name: hyprland | enable coprs
-  become: true
-  become_user: root
-  community.general.copr:
-    state: enabled
-    name: solopasha/hyprland
-  tags: ['hyprland']
 
-- name: hyprland | install system packages
-  become: true
-  become_user: root
-  ansible.builtin.dnf5:
-    name:
-      - hyprland
-      - hypridle
-      - hyprlock
-      - waybar
-      # XDG stuff
-      - xdg-desktop-portal-hyprland
-      - xdg-desktop-portal-gtk
-      # nvidia stuff
-      - akmod-nvidia
-      - xorg-x11-drv-nvidia-cuda
-      - libva
-      - libva-nvidia-driver
-      - egl-wayland
-      - egl-wayland-devel
-      # sddm
-      - sddm
-      - sddm-breeze
-      - sddm-wayland-generic
-      - qt6-qt5compat
-      - qt6-qtdeclarative
-      - qt6-qtsvg
-      - qt5-wayland
-      - qt6-wayland
-      # bluetooth
-      - bluez
-      - bluez-tools
-      - blueman
-      - python3-cairo
-    state: present
-  tags: ['hyprland']
+# - name: hyprland | enable coprs
+#   become: true
+#   become_user: root
+#   community.general.copr:
+#     state: enabled
+#     name: solopasha/hyprland
+#   tags: ['hyprland']
+
+# - name: hyprland | install system packages
+#   become: true
+#   become_user: root
+#   ansible.builtin.dnf5:
+#     name:
+#       - hyprland
+#       - hypridle
+#       - hyprlock
+#       - waybar
+#       - mako
+#       # XDG stuff
+#       - xdg-desktop-portal-hyprland
+#       - xdg-desktop-portal-gtk
+#       # nvidia stuff
+#       - akmod-nvidia
+#       - xorg-x11-drv-nvidia-cuda
+#       - libva
+#       - libva-nvidia-driver
+#       - egl-wayland
+#       - egl-wayland-devel
+#       # sddm
+#       - sddm
+#       - sddm-breeze
+#       - sddm-wayland-generic
+#       - qt6-qt5compat
+#       - qt6-qtdeclarative
+#       - qt6-qtsvg
+#       # bluetooth
+#       - bluez
+#       - bluez-tools
+#       - blueman
+#       - python3-cairo
+#     state: present
+#   tags: ['hyprland']
 
 - name: hyprland | disable old session managers
   become: true
@@ -63,27 +63,28 @@
     - gdm
     - lxdm
     - lxdm-gtk3
+    - sddm
 
-- name: hyprland | set systemd default target
-  become: true
-  become_user: root
-  register: _
-  changed_when: _.rc == 2
-  failed_when: _.rc == 1
-  ansible.builtin.shell: |
-    if [[ "$(systemctl get-default)" == "graphical.target" ]]; then
-      exit 0
-    fi
-    if systemctl set-default graphical.target; then
-      exit 2
-    fi
-    exit 1
+# - name: hyprland | set systemd default target
+#   become: true
+#   become_user: root
+#   register: _
+#   changed_when: _.rc == 2
+#   failed_when: _.rc == 1
+#   ansible.builtin.shell: |
+#     if [[ "$(systemctl get-default)" == "graphical.target" ]]; then
+#       exit 0
+#     fi
+#     if systemctl set-default graphical.target; then
+#       exit 2
+#     fi
+#     exit 1
 
 - name: hyprland | enable sddm service
   become: true
   become_user: root
   ansible.builtin.systemd_service:
-    name: "sddm.service"
+    name: "gdm.service"
     state: started
     enabled: true
 

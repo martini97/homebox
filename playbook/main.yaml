@@ -208,6 +208,11 @@
             name: ghostty
             state: present
 
-    - name: hyprland | setup
-      ansible.builtin.import_tasks: tasks/hyprland.yml
-      tags: ['hyprland']
+    # NOTE(2025-03-24): not ready yet, sddm fails to load the gui
+    # - name: hyprland | setup
+    #   ansible.builtin.import_tasks: tasks/hyprland.yml
+    #   tags: ['hyprland']
+
+    - name: gnome | setup
+      ansible.builtin.import_tasks: tasks/gnome.yml
+      tags: ['gnome']

@@ -3,6 +3,8 @@
     font-size: 13px;
 }
 
+window.DP-1 * { font-size: 20px; }
+
 window#waybar {
     background-color: rgba(43, 48, 59, 0.5);
     border-bottom: 3px solid rgba(100, 114, 125, 0.5);
@@ -15,15 +17,6 @@ window#waybar.hidden {
     opacity: 0.2;
 }
 
-/*
-window#waybar.empty {
-    background-color: transparent;
-}
-window#waybar.solo {
-    background-color: #FFFFFF;
-}
-*/
-
 window#waybar.termite {
     background-color: #3F3F3F;
 }
@@ -34,14 +27,11 @@ window#waybar.chromium {
 }
 
 button {
-    /* Use box-shadow instead of border so the text isn't offset */
     box-shadow: inset 0 -3px transparent;
-    /* Avoid rounded borders under each button name */
     border: none;
     border-radius: 0;
 }
 
-/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 button:hover {
     background: inherit;
     box-shadow: inset 0 -3px #ffffff;
@@ -63,16 +53,21 @@ button:hover {
 }
 
 #workspaces button.active {
-    background-color: #64727D;
-    box-shadow: inset 0 -3px #ffffff;
+    background-color: #2ecc71;
+    color: #282828;
+    font-weight: 700;
+    box-shadow: inset 0 -3px #282828;
 }
 
 #workspaces button.urgent {
     background-color: #eb4d4b;
 }
 
-#mode {
-    background-color: #64727D;
+#submap.resize {
+    color: #ffffff;
+    background-color: #eb4d4b;
+    font-weight: 700;
+    padding: 0 10px;
     box-shadow: inset 0 -3px #ffffff;
 }
 
@@ -276,7 +271,6 @@ label:focus {
     background: #00b093;
     color: #740864;
     padding: 0 5px;
-    margin: 0 5px;
     min-width: 16px;
 }
 
@@ -323,4 +317,11 @@ label:focus {
 
 #privacy-item.audio-out {
     background-color: #0069d4;
+}
+
+#custom-power {
+    background-color: #f53c3c;
+    color: #ffffff;
+    padding: 0 10px;
+    min-width: unset;
 }

@@ -1,0 +1,59 @@
+---
+- name: gnome | install system packages
+  become: true
+  become_user: root
+  ansible.builtin.dnf5:
+    name:
+      - gnome-shell-extension-forge
+
+- name: gnome | disable dynamic workspaces
+  community.general.dconf:
+    key: '/org/gnome/mutter/dynamic-workspaces'
+    value: 'false'
+
+- name: gnome | prefer 9 workspaces
+  community.general.dconf:
+    key: "/org/gnome/desktop/wm/preferences/num-workspaces"
+    value: 9
+    state: present
+
+- name: gnome | unset super+n keys
+  community.general.dconf:
+    key: '/org/gnome/shell/keybindings/switch-to-application-{{ item }}'
+    value: '@as []'
+  with_sequence: start=1 end=9
+
+- name: gnome | switch to workspace
+  community.general.dconf:
+    key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-{{ item }}"
+    value: "['<Super>{{ item }}']"
+    state: present
+  with_sequence: start=1 end=9
+
+- name: gnome | move to workspace
+  community.general.dconf:
+    key: '/org/gnome/desktop/wm/keybindings/move-to-workspace-{{ item }}'
+    value: "['<Super><Shift>{{ item }}']"
+  with_sequence: start=1 end=9
+
+- name: gnome | begin resize
+  community.general.dconf:
+    key: '/org/gnome/desktop/wm/keybindings/begin-resize'
+    value: "['<Alt>F8', '<Super>r']"
+
+- name: gnome | toggle maximized
+  community.general.dconf:
+    key: '/org/gnome/desktop/wm/keybindings/toggle-maximized'
+    value: "['<Alt>F10', '<Super>f']"
+
+- name: gnome | enable extensions
+  community.general.dconf:
+    key: "org/gnome/shell/enabled-extensions"
+    value: "['background-logo@fedorahosted.org', 'forge@jmmaranan.com']"
+    state: present
+
+- name: gnome | set favorite apps
+  community.general.dconf:
+    key: "/org/gnome/shell/favorite-apps"
+    value: "['com.mitchellh.ghostty', 'org.mozilla.firefox.desktop']"
+    state: present
