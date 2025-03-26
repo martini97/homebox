@@ -121,6 +121,8 @@ do -- misc. keymaps
 		local is_search = mode == "?" or mode == "/"
 		return is_search and ".*" or " "
 	end, { expr = true })
+
+	vim.keymap.set("n", "<leader>wt", "<cmd>tab split<cr>", { desc = "[window] split to tab" })
 end
 
 do -- yank
