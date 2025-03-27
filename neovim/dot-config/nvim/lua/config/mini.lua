@@ -46,7 +46,10 @@ vim.api.nvim_create_user_command("Bwipeout", function()
 end, {})
 
 vim.keymap.set("n", "<leader>wo", function()
-	require("mini.misc").zoom(0, { title = { { " <ZOOM> ", "Error" } }, title_pos = "center", border = "double" })
+	require("mini.misc").zoom(
+		0,
+		{ title = { { " <ZOOM> ", "Error" } }, title_pos = "center", border = vim.o.winborder }
+	)
 end, { desc = "[window] zoom" })
 vim.keymap.set("n", "<leader>wh", "<c-w>h", { desc = "[window] left" })
 vim.keymap.set("n", "<leader>wj", "<c-w>j", { desc = "[window] down" })

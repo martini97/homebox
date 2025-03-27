@@ -57,6 +57,8 @@ do -- options
 	vim.opt.foldexpr = "v:lua.vim.lsp.foldexpr()"
 	vim.opt.foldtext = ""
 	vim.opt.foldcolumn = "auto"
+
+	vim.opt.winborder = "double"
 end
 
 do -- diagnostics
@@ -74,6 +76,7 @@ do -- diagnostics
 		utils.bind(vim.diagnostic.jump, { count = 1, wrap = true, float = true }),
 		{ desc = "next diagnostic" }
 	)
+	vim.diagnostic.config({ virtual_text = { current_line = true } })
 end
 
 do -- misc. keymaps
@@ -319,8 +322,7 @@ do --- lazy
 					{
 						"<leader>ap",
 						function()
-							local actions = require("CopilotChat.actions")
-							require("CopilotChat.integrations.fzflua").pick(actions.prompt_actions())
+							require("CopilotChat").select_prompt()
 						end,
 						mode = "n",
 						desc = "[copilot] prompt actions",

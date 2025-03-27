@@ -1,5 +1,5 @@
 local M = {}
-local core = require("core.lsp.completion")
+local comp = require("core.lsp.completion")
 local helpers = require("core.lsp.helpers")
 local methods = vim.lsp.protocol.Methods
 
@@ -42,10 +42,10 @@ function M.on_attach(ev)
 	end
 
 	if client:supports_method(methods.textDocument_completion, ev.buf) then
-		core.enable_completion(client, ev.buf)
+		comp.enable_completion(client, ev.buf)
 
 		if client:supports_method(methods.completionItem_resolve, ev.buf) then
-			core.enable_completion_docs(client, ev.buf)
+			comp.enable_completion_docs(client, ev.buf)
 		end
 	end
 end
