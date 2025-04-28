@@ -279,7 +279,15 @@ do --- lazy
 				"CopilotC-Nvim/CopilotChat.nvim",
 				dependencies = {
 					{ "nvim-lua/plenary.nvim", branch = "master" },
-					{ "zbirenbaum/copilot.lua", cmd = "Copilot", event = "InsertEnter", opts = {} },
+					{
+						"zbirenbaum/copilot.lua",
+						cmd = "Copilot",
+						event = "InsertEnter",
+						opts = {
+							suggestion = { enabled = false },
+							panel = { enabled = false },
+						},
+					},
 				},
 				build = "make tiktoken",
 				opts = {},
@@ -478,7 +486,7 @@ do --- lazy
 			{
 				"saghen/blink.cmp",
 				version = "*",
-				dependencies = { "L3MON4D3/LuaSnip", version = "v2.*" },
+				dependencies = { { "L3MON4D3/LuaSnip", version = "v2.*" }, { "fang2hou/blink-copilot" } },
 				opts = {
 					snippets = { preset = "luasnip" },
 					signature = { enabled = true },
@@ -487,7 +495,17 @@ do --- lazy
 						use_nvim_cmp_as_default = true,
 						nerd_font_variant = "mono",
 					},
-					sources = { default = { "lsp", "path", "snippets", "buffer" } },
+					sources = {
+						default = { "lsp", "path", "snippets", "copilot", "codecompanion", "buffer" },
+						providers = {
+							copilot = {
+								name = "copilot",
+								module = "blink-copilot",
+								score_offset = 100,
+								async = true,
+							},
+						},
+					},
 					fuzzy = { implementation = "prefer_rust_with_warning" },
 					completion = {
 						documentation = { auto_show = true, auto_show_delay_ms = 500 },
@@ -583,6 +601,19 @@ do --- lazy
 							harpoon:list():select(i)
 						end, { desc = "[harpoon] select " .. tostring(i) .. " nth" })
 					end
+				end,
+			},
+			--- }}}
+			--- ai {{{
+			{
+				"olimorris/codecompanion.nvim",
+				opts = {},
+				dependencies = {
+					"nvim-lua/plenary.nvim",
+					"nvim-treesitter/nvim-treesitter",
+				},
+				config = function()
+					require("config.ai")
 				end,
 			},
 			--- }}}

@@ -22,6 +22,7 @@ configs.setup({
 		"vim",
 		"vimdoc",
 		"vue",
+		"yaml",
 	},
 	sync_install = false,
 	auto_install = false,
