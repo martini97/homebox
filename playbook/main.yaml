@@ -56,7 +56,8 @@
           - fzf
           - ripgrep
           - fd-find
-          - eza
+          # No longer available on Fedora 42
+          # - eza
           - bat
           - zoxide
           - jq
@@ -216,3 +217,7 @@
     - name: gnome | setup
       ansible.builtin.import_tasks: tasks/gnome.yml
       tags: ['gnome']
+
+    - name: aider | install aider
+      ansible.builtin.pip:
+        name: aider-install
