@@ -1,0 +1,29 @@
+% lumper, opendock
+
+# run neutron cli command
+lumper run \
+  --cpu <cpu> \
+  --memory <memory> \
+  --time-to-live <time_to_live> \
+  --env <environment> \
+  --project opendock-neutron \
+  --namespace opendock \
+  --cluster-role opendock \
+  -- env AS_CLI_APP=true node main.js <neutron_command>
+
+# migrate elasticsearch indexes
+lumper run \
+  --cpu <cpu> \
+  --memory <memory> \
+  --time-to-live <time_to_live> \
+  --env <environment> \
+  --project opendock-neutron \
+  --namespace opendock \
+  --cluster-role opendock \
+  -- env AS_CLI_APP=true node main.js migrateElasticsearch
+
+$ cpu: echo -e "400\n"
+$ memory: echo -e "512\n1024\n"
+$ time_to_live: echo -e "1h\n"
+$ environment: echo -e "production\nstaging\nqa"
+$ neutron_command: echo -e "migrateElasticsearch\npopulateElasticsearchIndexes\n"

@@ -41,7 +41,6 @@ do -- options
 	vim.opt.grepformat = "%f:%l:%c:%m"
 	vim.opt.inccommand = "split"
 	vim.opt.scrolloff = 10
-	vim.opt.completeopt = { "menu", "menuone", "noselect", "popup", "fuzzy" }
 	vim.opt.wildmode = { "longest:full", "full" }
 	vim.opt.wildoptions:append("fuzzy")
 	vim.opt.spelllang = "en_us"
@@ -59,6 +58,11 @@ do -- options
 	vim.opt.foldcolumn = "auto"
 
 	vim.opt.winborder = "double"
+
+	vim.opt.complete = { ".", "o" }
+	vim.opt.completeopt = { "menu", "menuone", "noselect", "popup", "fuzzy" }
+	vim.opt.autocomplete = true
+	vim.opt.pumheight = 10
 end
 
 do -- diagnostics
@@ -258,397 +262,271 @@ do --- comment line
 	end, { expr = true, desc = "Duplicate [count] lines and comment out the first instance" })
 end
 
-do --- lazy
-	local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+do -- plugins
+	-- fzf-lua
+	vim.pack.add({
+		"https://github.com/echasnovski/mini.icons",
+		"https://github.com/ibhagwan/fzf-lua",
+	})
 
-	if not (vim.uv or vim.loop).fs_stat(lazypath) then
-		local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-		local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-		if vim.v.shell_error ~= 0 then
-			vim.api.nvim_echo({
-				{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-				{ out, "WarningMsg" },
-				{ "\nPress any key to exit..." },
-			}, true, {})
-			vim.fn.getchar()
-			os.exit(1)
-		end
-	end
+	-- conform
+	vim.pack.add({ "https://github.com/stevearc/conform.nvim" })
 
-	vim.opt.rtp:prepend(lazypath)
+	-- copilot
+	vim.pack.add({
+		{ src = "https://github.com/nvim-lua/plenary.nvim", version = "master" },
+		"https://github.com/zbirenbaum/copilot.lua",
+		"https://github.com/CopilotC-Nvim/CopilotChat.nvim",
+	})
 
-	require("lazy").setup({
-		install = { colorscheme = { "default" } },
-		checker = { enabled = true },
-		dev = { path = "~/git/martini97", fallback = true },
-		rocks = { hererocks = true },
-		spec = {
-			--- fzf {{{
-			{
-				"ibhagwan/fzf-lua",
-				event = "VimEnter",
-				dependencies = { { "echasnovski/mini.icons", opts = {} } },
-				config = function()
-					require("config.fzf")
-				end,
-			},
-			--- }}}
-			--- colors {{{
-			{ "martini97/system-theme.nvim", dev = true, opts = {} },
-			--- }}}
-			--- conform {{{
-			{
-				"stevearc/conform.nvim",
-				event = { "BufWritePre" },
-				cmd = { "ConformInfo" },
-				config = function()
-					require("config.conform")
-				end,
-			},
-			--- }}}
-			--- copilot {{{
-			{
-				"CopilotC-Nvim/CopilotChat.nvim",
-				dependencies = {
-					{ "nvim-lua/plenary.nvim", branch = "master" },
-					{
-						"zbirenbaum/copilot.lua",
-						cmd = "Copilot",
-						event = "InsertEnter",
-						opts = {
-							suggestion = { enabled = false },
-							panel = { enabled = false },
-						},
-					},
-				},
-				build = "make tiktoken",
-				opts = {},
-				cmd = {
-					"CopilotChat",
-					"CopilotChatFix",
-					"CopilotChatDocs",
-					"CopilotChatLoad",
-					"CopilotChatOpen",
-					"CopilotChatSave",
-					"CopilotChatStop",
-					"CopilotChatClose",
-					"CopilotChatReset",
-					"CopilotChatTests",
-					"CopilotChatAgents",
-					"CopilotChatCommit",
-					"CopilotChatModels",
-					"CopilotChatReview",
-					"CopilotChatToggle",
-					"CopilotChatExplain",
-					"CopilotChatOptimize",
-					"CopilotChatDebugInfo",
-					"CopilotChatCommitStaged",
-					"CopilotChatFixDiagnostic",
-				},
-				keys = {
-					{
-						"<leader>aq",
-						function()
-							vim.ui.input({ prompt = ">>> Quick Chat: " }, function(query)
-								if not query or query == "" then
-									return
-								end
-								require("CopilotChat").ask(query, { selection = require("CopilotChat.select").buffer })
-							end)
-						end,
-						mode = "n",
-						desc = "[copilot] quick chat",
-					},
-					{
-						"<leader>ap",
-						function()
-							require("CopilotChat").select_prompt()
-						end,
-						mode = "n",
-						desc = "[copilot] prompt actions",
-					},
-					{
-						"<leader>aa",
-						"<cmd>CopilotChatToggle<cr>",
-						mode = "n",
-						desc = "[copilot] prompt actions",
-					},
-				},
-			},
-			--- }}}
-			--- git {{{
-			{
-				"martini97/git-worktree.nvim",
-				dev = true,
-				keys = {
-					{
-						"<leader>gw",
-						function()
-							require("git-worktree").prompt()
-						end,
-						mode = "n",
-						desc = "[git-worktree] prompt for action",
-					},
-				},
-				config = function()
-					vim.g.git_worktree_loglevel = vim.log.levels.INFO
-				end,
-			},
-			{ "tpope/vim-fugitive" },
-			{ "tpope/vim-rhubarb" },
-			{
-				"NeogitOrg/neogit",
-				dependencies = { "nvim-lua/plenary.nvim", "sindrets/diffview.nvim", "ibhagwan/fzf-lua" },
-				config = true,
-				cmd = { "Neogit" },
-				keys = {
-					{
-						"<leader>gg",
-						function()
-							require("neogit").open({ kind = "floating" })
-						end,
-						mode = "n",
-						desc = "[neogit] open",
-					},
-				},
-			},
-			{
-				"linrongbin16/gitlinker.nvim",
-				cmd = "GitLink",
-				opts = {},
-				keys = {
-					{ "<leader>gy", vim.cmd.GitLink, mode = { "n", "v" }, desc = "[gitlink] yank" },
-				},
-			},
-			--- }}}
-			--- lint {{{
-			{
-				"mfussenegger/nvim-lint",
-				event = { "BufEnter", "BufWritePost", "InsertLeave", "TextChanged" },
-				config = function()
-					require("config.lint")
-				end,
-			},
-			--- }}}
-			--- lsp {{{
-			{
-				"folke/lazydev.nvim",
-				dependencies = { { "Bilal2453/luvit-meta", lazy = true } },
-				ft = "lua",
-				opts = { library = { { path = "luvit-meta/library", words = { "vim%.uv" } } } },
-			},
-			{
-				"pmizio/typescript-tools.nvim",
-				dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-				ft = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
-				opts = {},
-				config = function()
-					require("typescript-tools").setup({
-						on_attach = function(client, _bufnr)
-							client.server_capabilities.documentFormattingProvider = false
-							client.server_capabilities.documentRangeFormattingProvider = false
-						end,
-						filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
-						settings = {
-							tsserver_plugins = { "@vue/typescript-plugin" },
-							expose_as_code_action = "all",
-							jsx_close_tag = {
-								enable = true,
-								filetypes = { "javascriptreact", "typescriptreact" },
-							},
-						},
-					})
-				end,
-			},
-			--- }}}
-			--- mini {{{
-			{
-				"echasnovski/mini.nvim",
-				version = false,
-				config = function()
-					require("config.mini")
-				end,
-			},
-			--- }}}
-			--- oil {{{
-			{
-				"stevearc/oil.nvim",
-				dependencies = { { "echasnovski/mini.icons", opts = {} } },
-				config = function()
-					require("config.oil")
-				end,
-			},
-			--- }}}
-			--- snippets {{{
-			{
-				"L3MON4D3/LuaSnip",
-				version = "v2.*",
-				build = "make install_jsregexp",
-				config = function()
-					require("config.luasnip")
-				end,
-			},
-			--- }}}
-			--- treesitter {{{
-			{
-				"nvim-treesitter/nvim-treesitter",
-				dependencies = {
-					{ "nvim-treesitter/nvim-treesitter-textobjects" },
-					{ "nvim-treesitter/nvim-treesitter-context" },
-				},
-				build = ":TSUpdate",
-				config = function()
-					require("config.treesitter")
-				end,
-			},
-			--- }}}
-			--- beancount {{{
-			{
-				"nathangrigg/vim-beancount",
-				ft = "beancount",
-			},
-			--- }}}
-			--- beancount {{{
-			{
-				"rest-nvim/rest.nvim",
-				ft = "http",
-			},
-			--- }}}
-			--- blink.nvim {{{
-			{
-				"saghen/blink.cmp",
-				version = "*",
-				dependencies = { { "L3MON4D3/LuaSnip", version = "v2.*" }, { "fang2hou/blink-copilot" } },
-				opts = {
-					snippets = { preset = "luasnip" },
-					signature = { enabled = true },
-					keymap = { preset = "default" },
-					appearance = {
-						use_nvim_cmp_as_default = true,
-						nerd_font_variant = "mono",
-					},
-					sources = {
-						default = { "lsp", "path", "snippets", "copilot", "codecompanion", "buffer" },
-						providers = {
-							copilot = {
-								name = "copilot",
-								module = "blink-copilot",
-								score_offset = 100,
-								async = true,
-							},
-						},
-					},
-					fuzzy = { implementation = "prefer_rust_with_warning" },
-					completion = {
-						documentation = { auto_show = true, auto_show_delay_ms = 500 },
-						menu = {
-							draw = {
-								columns = { { "label", "label_description", gap = 1 }, { "kind" } },
-								components = {
-									kind = {
-										ellipsis = false,
-										text = function(ctx)
-											return ctx.kind
-										end,
-										highlight = function(ctx)
-											local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
-											return hl
-										end,
-									},
-								},
-							},
-						},
-					},
-				},
-				opts_extend = { "sources.default" },
-			},
-			--- }}}
-			--- undotree {{{
-			{
-				"mbbill/undotree",
-				config = function()
-					local undo_dir = vim.fs.joinpath(vim.fn.stdpath("state"), "undo")
-					if not vim.uv.fs_stat(undo_dir) then
-						vim.fn.mkdir(undo_dir, "p", "0700")
-					end
+	-- neogit
+	vim.pack.add({
+		{ src = "https://github.com/nvim-lua/plenary.nvim", version = "master" },
+		"https://github.com/sindrets/diffview.nvim",
+		"https://github.com/ibhagwan/fzf-lua",
+		"https://github.com/linrongbin16/gitlinker.nvim",
+		"https://github.com/NeogitOrg/neogit",
+	})
 
-					vim.opt.undodir = undo_dir
-					vim.opt.undofile = true
+	-- lint
+	vim.pack.add({ "https://github.com/mfussenegger/nvim-lint" })
 
-					vim.keymap.set("n", "<leader>tu", vim.cmd.UndotreeToggle)
-				end,
-			},
-			--- }}}
-			--- harpoon {{{
-			{
-				"ThePrimeagen/harpoon",
-				branch = "harpoon2",
-				dependencies = { "nvim-lua/plenary.nvim" },
-				config = function()
-					local harpoon = require("harpoon")
-					harpoon:setup()
+	-- oil
+	vim.pack.add({
+		"https://github.com/echasnovski/mini.icons",
+		"https://github.com/stevearc/oil.nvim",
+	})
 
-					vim.keymap.set("n", "<leader>ha", function()
-						harpoon:list():add()
-					end, { desc = "[harpoon] add" })
-					vim.keymap.set("n", "<c-h>a", function()
-						harpoon:list():add()
-					end, { desc = "[harpoon] add" })
-
-					vim.keymap.set("n", "<leader>hm", function()
-						harpoon.ui:toggle_quick_menu(harpoon:list())
-					end, { desc = "[harpoon] toggle quick menu" })
-					vim.keymap.set("n", "<c-h>m", function()
-						harpoon.ui:toggle_quick_menu(harpoon:list())
-					end, { desc = "[harpoon] toggle quick menu" })
-
-					vim.keymap.set("n", "<leader>hp", function()
-						harpoon:list():prev()
-					end, { desc = "[harpoon] previous" })
-					vim.keymap.set("n", "<c-h>p", function()
-						harpoon:list():prev()
-					end, { desc = "[harpoon] previous" })
-
-					vim.keymap.set("n", "<leader>hn", function()
-						harpoon:list():next()
-					end, { desc = "[harpoon] next" })
-					vim.keymap.set("n", "<c-h>n", function()
-						harpoon:list():next()
-					end, { desc = "[harpoon] next" })
-
-					for i = 1, 10 do
-						vim.keymap.set("n", "<leader>h" .. tostring(i % 10), function()
-							harpoon:list():select(i)
-						end, { desc = "[harpoon] select " .. tostring(i) .. " nth" })
-						vim.keymap.set("n", "<c-h>" .. tostring(i % 10), function()
-							harpoon:list():select(i)
-						end, { desc = "[harpoon] select " .. tostring(i) .. " nth" })
-					end
-
-					for i, k in ipairs({ "h", "j", "k", "l", ";" }) do
-						vim.keymap.set("n", "<leader>h" .. k, function()
-							harpoon:list():select(i)
-						end, { desc = "[harpoon] select " .. tostring(i) .. " nth" })
-						vim.keymap.set("n", "<c-h>" .. k, function()
-							harpoon:list():select(i)
-						end, { desc = "[harpoon] select " .. tostring(i) .. " nth" })
-					end
-				end,
-			},
-			--- }}}
-			--- ai {{{
-			{
-				"olimorris/codecompanion.nvim",
-				opts = {},
-				dependencies = {
-					"nvim-lua/plenary.nvim",
-					"nvim-treesitter/nvim-treesitter",
-				},
-				config = function()
-					require("config.ai")
-				end,
-			},
-			--- }}}
-		},
+	-- ts-tools
+	vim.pack.add({
+		{ src = "https://github.com/nvim-lua/plenary.nvim", version = "master" },
+		"https://github.com/neovim/nvim-lspconfig",
+		"https://github.com/pmizio/typescript-tools.nvim",
 	})
 end
+
+-- do --- lazy
+-- 	require("lazy").setup({
+-- 		spec = {
+-- 			--- lsp {{{
+-- 			{
+-- 				"folke/lazydev.nvim",
+-- 				dependencies = { { "Bilal2453/luvit-meta", lazy = true } },
+-- 				ft = "lua",
+-- 				opts = { library = { { path = "luvit-meta/library", words = { "vim%.uv" } } } },
+-- 			},
+-- 			{
+-- 				"pmizio/typescript-tools.nvim",
+-- 				dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+-- 				ft = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+-- 				opts = {},
+-- 				config = function()
+-- 					require("typescript-tools").setup({
+-- 						on_attach = function(client, _bufnr)
+-- 							client.server_capabilities.documentFormattingProvider = false
+-- 							client.server_capabilities.documentRangeFormattingProvider = false
+-- 						end,
+-- 						filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+-- 						settings = {
+-- 							tsserver_plugins = { "@vue/typescript-plugin" },
+-- 							expose_as_code_action = "all",
+-- 							jsx_close_tag = {
+-- 								enable = true,
+-- 								filetypes = { "javascriptreact", "typescriptreact" },
+-- 							},
+-- 						},
+-- 					})
+-- 				end,
+-- 			},
+-- 			--- }}}
+-- 			--- mini {{{
+-- 			{
+-- 				"echasnovski/mini.nvim",
+-- 				version = false,
+-- 				config = function()
+-- 					require("config.mini")
+-- 				end,
+-- 			},
+-- 			--- }}}
+-- 			--- oil {{{
+-- 			{
+-- 				"stevearc/oil.nvim",
+-- 				dependencies = { { "echasnovski/mini.icons", opts = {} } },
+-- 				config = function()
+-- 					require("config.oil")
+-- 				end,
+-- 			},
+-- 			--- }}}
+-- 			--- snippets {{{
+-- 			{
+-- 				"L3MON4D3/LuaSnip",
+-- 				version = "v2.*",
+-- 				build = "make install_jsregexp",
+-- 				config = function()
+-- 					require("config.luasnip")
+-- 				end,
+-- 			},
+-- 			--- }}}
+-- 			--- treesitter {{{
+-- 			{
+-- 				"nvim-treesitter/nvim-treesitter",
+-- 				dependencies = {
+-- 					{ "nvim-treesitter/nvim-treesitter-textobjects" },
+-- 					{ "nvim-treesitter/nvim-treesitter-context" },
+-- 				},
+-- 				build = ":TSUpdate",
+-- 				config = function()
+-- 					require("config.treesitter")
+-- 				end,
+-- 			},
+-- 			--- }}}
+-- 			--- beancount {{{
+-- 			{
+-- 				"nathangrigg/vim-beancount",
+-- 				ft = "beancount",
+-- 			},
+-- 			--- }}}
+-- 			--- beancount {{{
+-- 			{
+-- 				"rest-nvim/rest.nvim",
+-- 				ft = "http",
+-- 			},
+-- 			--- }}}
+-- 			--- blink.nvim {{{
+-- 			{
+-- 				"saghen/blink.cmp",
+-- 				version = "*",
+-- 				dependencies = { { "L3MON4D3/LuaSnip", version = "v2.*" }, { "fang2hou/blink-copilot" } },
+-- 				opts = {
+-- 					snippets = { preset = "luasnip" },
+-- 					signature = { enabled = true },
+-- 					keymap = { preset = "default" },
+-- 					appearance = {
+-- 						use_nvim_cmp_as_default = true,
+-- 						nerd_font_variant = "mono",
+-- 					},
+-- 					sources = {
+-- 						default = { "lsp", "path", "snippets", "copilot", "codecompanion", "buffer" },
+-- 						providers = {
+-- 							copilot = {
+-- 								name = "copilot",
+-- 								module = "blink-copilot",
+-- 								score_offset = 100,
+-- 								async = true,
+-- 							},
+-- 						},
+-- 					},
+-- 					fuzzy = { implementation = "prefer_rust_with_warning" },
+-- 					completion = {
+-- 						documentation = { auto_show = true, auto_show_delay_ms = 500 },
+-- 						menu = {
+-- 							draw = {
+-- 								columns = { { "label", "label_description", gap = 1 }, { "kind" } },
+-- 								components = {
+-- 									kind = {
+-- 										ellipsis = false,
+-- 										text = function(ctx)
+-- 											return ctx.kind
+-- 										end,
+-- 										highlight = function(ctx)
+-- 											local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
+-- 											return hl
+-- 										end,
+-- 									},
+-- 								},
+-- 							},
+-- 						},
+-- 					},
+-- 				},
+-- 				opts_extend = { "sources.default" },
+-- 			},
+-- 			--- }}}
+-- 			--- undotree {{{
+-- 			{
+-- 				"mbbill/undotree",
+-- 				config = function()
+-- 					local undo_dir = vim.fs.joinpath(vim.fn.stdpath("state"), "undo")
+-- 					if not vim.uv.fs_stat(undo_dir) then
+-- 						vim.fn.mkdir(undo_dir, "p", "0700")
+-- 					end
+--
+-- 					vim.opt.undodir = undo_dir
+-- 					vim.opt.undofile = true
+--
+-- 					vim.keymap.set("n", "<leader>tu", vim.cmd.UndotreeToggle)
+-- 				end,
+-- 			},
+-- 			--- }}}
+-- 			--- harpoon {{{
+-- 			{
+-- 				"ThePrimeagen/harpoon",
+-- 				branch = "harpoon2",
+-- 				dependencies = { "nvim-lua/plenary.nvim" },
+-- 				config = function()
+-- 					local harpoon = require("harpoon")
+-- 					harpoon:setup()
+--
+-- 					vim.keymap.set("n", "<leader>ha", function()
+-- 						harpoon:list():add()
+-- 					end, { desc = "[harpoon] add" })
+-- 					vim.keymap.set("n", "<c-h>a", function()
+-- 						harpoon:list():add()
+-- 					end, { desc = "[harpoon] add" })
+--
+-- 					vim.keymap.set("n", "<leader>hm", function()
+-- 						harpoon.ui:toggle_quick_menu(harpoon:list())
+-- 					end, { desc = "[harpoon] toggle quick menu" })
+-- 					vim.keymap.set("n", "<c-h>m", function()
+-- 						harpoon.ui:toggle_quick_menu(harpoon:list())
+-- 					end, { desc = "[harpoon] toggle quick menu" })
+--
+-- 					vim.keymap.set("n", "<leader>hp", function()
+-- 						harpoon:list():prev()
+-- 					end, { desc = "[harpoon] previous" })
+-- 					vim.keymap.set("n", "<c-h>p", function()
+-- 						harpoon:list():prev()
+-- 					end, { desc = "[harpoon] previous" })
+--
+-- 					vim.keymap.set("n", "<leader>hn", function()
+-- 						harpoon:list():next()
+-- 					end, { desc = "[harpoon] next" })
+-- 					vim.keymap.set("n", "<c-h>n", function()
+-- 						harpoon:list():next()
+-- 					end, { desc = "[harpoon] next" })
+--
+-- 					for i = 1, 10 do
+-- 						vim.keymap.set("n", "<leader>h" .. tostring(i % 10), function()
+-- 							harpoon:list():select(i)
+-- 						end, { desc = "[harpoon] select " .. tostring(i) .. " nth" })
+-- 						vim.keymap.set("n", "<c-h>" .. tostring(i % 10), function()
+-- 							harpoon:list():select(i)
+-- 						end, { desc = "[harpoon] select " .. tostring(i) .. " nth" })
+-- 					end
+--
+-- 					for i, k in ipairs({ "h", "j", "k", "l", ";" }) do
+-- 						vim.keymap.set("n", "<leader>h" .. k, function()
+-- 							harpoon:list():select(i)
+-- 						end, { desc = "[harpoon] select " .. tostring(i) .. " nth" })
+-- 						vim.keymap.set("n", "<c-h>" .. k, function()
+-- 							harpoon:list():select(i)
+-- 						end, { desc = "[harpoon] select " .. tostring(i) .. " nth" })
+-- 					end
+-- 				end,
+-- 			},
+-- 			--- }}}
+-- 			--- ai {{{
+-- 			{
+-- 				"olimorris/codecompanion.nvim",
+-- 				opts = {},
+-- 				dependencies = {
+-- 					"nvim-lua/plenary.nvim",
+-- 					"nvim-treesitter/nvim-treesitter",
+-- 				},
+-- 				config = function()
+-- 					require("config.ai")
+-- 				end,
+-- 			},
+-- 			--- }}}
+-- 		},
+-- 	})
+-- end

@@ -1,4 +1,5 @@
 local oil = require("oil")
+require("mini.icons").setup({})
 
 local function cycle_columns()
 	local columns = require("oil.config").columns

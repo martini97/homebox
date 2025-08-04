@@ -1,3 +1,5 @@
+require("gitlinker").setup()
+
 vim.env.GIT_EDITOR = "nvr -cc split --remote-wait"
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
@@ -8,7 +10,11 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 	end,
 })
 
-local function lazygit_log()
+vim.keymap.set("n", "<leader>gg", function()
+	require("neogit").open({ kind = "floating" })
+end, { desc = "[neogit] open" })
+
+vim.keymap.set("n", "<leader>gl", function()
 	local cwd = vim.uv.cwd()
 	local dirname = vim.fs.basename(cwd)
 	require("lazy.util").float_term({ "lazygit", "log" }, {
@@ -18,6 +24,6 @@ local function lazygit_log()
 		title_pos = "center",
 		style = "minimal",
 	})
-end
+end, { desc = "[git] lazygit log" })
 
-vim.keymap.set("n", "<leader>gl", lazygit_log, { desc = "[git] lazygit log" })
+vim.keymap.set({ "n", "v" }, "<leader>gy", vim.cmd.GitLink, { desc = "[git] yank link" })

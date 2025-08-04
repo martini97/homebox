@@ -1,0 +1,19 @@
+% tsh
+
+# tsh login
+tsh login --proxy="<tsh_proxy>" --auth=github
+
+# tsh k8s login
+tsh kube login <kube_cluster>
+
+# connect to database with pgcli
+; if you need write access to the db use the "admin" user
+tsh db login <tsh_database> --db-user <psql_user> --db-name <psql_database>
+tsh db env --query 'labels["Name"] == "<tsh_database>"' | source
+pgcli
+
+$ tsh_proxy: find ~/.tsh/keys -mindepth 1 -maxdepth 1 -exec basename {} \;
+$ kube_cluster: printf "Fetching clusters..." >&2; tsh kube ls --- --column 1 --header-lines 2 --delimiter '\s+'
+$ psql_user: echo -e "developer\n"
+$ psql_database: echo -e "main\nmainproduction\nmainstaging\nmainqa\n"
+$ tsh_database: printf "Fetching databases..." >&2; tsh db ls --query 'labels["engine"] == "postgres"' --format json | jq --raw-output '.[].metadata.labels.Name'

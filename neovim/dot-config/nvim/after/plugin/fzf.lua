@@ -1,5 +1,6 @@
 require("fzf-lua").setup({})
 require("fzf-lua").register_ui_select()
+require("mini.icons").setup({})
 
 local utils = require("core.utils")
 
