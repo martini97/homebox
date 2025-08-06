@@ -5,3 +5,6 @@ pgrep --list-full --ignore-case --full <process_name>
 
 # background process
 nohup <process> &
+
+# reload kitty config
+pkill -USR1 kitty

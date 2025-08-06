@@ -27,3 +27,8 @@ $ memory: echo -e "512\n1024\n"
 $ time_to_live: echo -e "1h\n"
 $ environment: echo -e "production\nstaging\nqa"
 $ neutron_command: echo -e "migrateElasticsearch\npopulateElasticsearchIndexes\n"
+
+% git, opendock
+
+# push to qa
+git push origin $(git branch --show-current):qa --force
