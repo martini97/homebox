@@ -220,7 +220,8 @@ do -- fzf
 	require("mini.icons").setup({})
 
 	local keymaps = {
-		f = "files",
+		-- NOTE: testing builtin find with custom findfunc
+		-- f = "files",
 		h = "helptags",
 		b = "buffers",
 		k = "keymaps",
@@ -321,4 +322,23 @@ do -- copilot
 
 	require("copilot").setup({})
 	require("CopilotChat").setup({})
+end
+
+do -- findfunc
+	function _G.user_findfunc(cmdarg)
+		local result = vim.system({ "fd", "--full-path", "--hidden", "--follow" }, { text = true }):wait()
+		if not result or result.code ~= 0 then
+			vim.notify("findfunc: failed to list files" .. result.stdout, vim.log.levels.ERROR)
+			return {}
+		end
+		local files = vim.split(result.stdout, '\n', { trimempty = true })
+		if vim.trim(cmdarg or '') == '' then
+			return files
+		end
+		return vim.fn.matchfuzzy(files, cmdarg)
+	end
+
+	vim.opt.findfunc = 'v:lua.user_findfunc'
+
+	vim.keymap.set("n", "<leader>ff", ":<c-u>find ", { desc = "find" })
 end
