@@ -80,10 +80,6 @@ local function filename()
 	return fname .. " "
 end
 
-local function filetype()
-	return string.format(" %s ", vim.bo.filetype):upper()
-end
-
 local function lsp()
 	local count = {}
 	local levels = {
@@ -128,13 +124,14 @@ M.active = function()
 		"%#Statusline#",
 		update_mode_colors(),
 		mode(),
-		"%#Normal# ",
+		"%#Normal#",
 		filepath(),
 		filename(),
+		"%h%m%r",
 		"%#Normal#",
 		lsp(),
 		"%=%#StatusLineExtra#",
-		filetype(),
+		" %y",
 		lineinfo(),
 	})
 end
