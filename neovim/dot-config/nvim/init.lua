@@ -134,7 +134,7 @@ vim.api.nvim_create_autocmd("CursorMoved", {
 	end,
 })
 
-vim.filetype.add({ extension = { beancount = "beancount", bean = "beancount" } })
+vim.filetype.add({ extension = { beancount = "beancount", bean = "beancount", cheat = "navi" } })
 
 do -- lsp
 	vim.pack.add({
@@ -341,4 +341,45 @@ do -- findfunc
 	vim.opt.findfunc = 'v:lua.user_findfunc'
 
 	vim.keymap.set("n", "<leader>ff", ":<c-u>find ", { desc = "find" })
+end
+
+do -- treesitter
+	vim.pack.add({
+		"https://github.com/nvim-treesitter/nvim-treesitter",
+		"https://github.com/nvim-treesitter/nvim-treesitter-context"
+	})
+
+	---@diagnostic disable-next-line: missing-fields
+	require('nvim-treesitter.configs').setup({
+		ensure_installed = {
+			"bash",
+			"c",
+			"diff",
+			"html",
+			"javascript",
+			"jsdoc",
+			"json",
+			"jsonc",
+			"lua",
+			"luadoc",
+			"luap",
+			"markdown",
+			"markdown_inline",
+			"printf",
+			"python",
+			"query",
+			"regex",
+			"toml",
+			"tsx",
+			"typescript",
+			"vim",
+			"vimdoc",
+			"xml",
+			"yaml",
+		},
+		sync_install = false,
+		auto_install = true,
+		highlight = { enable = true, additional_vim_regex_highlighting = false },
+		indent = { enable = true },
+	})
 end

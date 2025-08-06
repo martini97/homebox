@@ -1,0 +1,13 @@
+% misc
+
+# lorem ipsum
+curl --silent --request POST \
+  https://lipsum.com/feed/json \
+  --data "amount=<lorem_amount>" \
+  --data "what=<lorem_what>" -d"start=<lorem_start>" \
+  | jq -r '.feed.lipsum'
+
+
+$ lorem_amount: echo -e "5\n10\n15\n"
+$ lorem_what: echo -e "words\nparas\nbytes\nlines\n"
+$ lorem_start: echo -e "true\nfalse"
