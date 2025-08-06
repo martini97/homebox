@@ -4,19 +4,19 @@
 kubectl config set-context --current --namespace=<namespace>
 
 # pod top
-kubectl top pod --containers --sum <pod>
+kubectl --namespace <namespace> top pod --containers --sum <pod>
 
 # project top
-kubectl top pod --sort-by memory --containers -l k8s.loadsmart.io/project=<project>
+kubectl --namespace <namespace> top pod --sort-by memory --containers -l k8s.loadsmart.io/project=<project>
 
 # pod describe
-kubectl describe pod <pod>
+kubectl --namespace <namespace> describe pod <pod>
 
 # pod exec
-kubectl -n <namespace> exec --stdin --tty <pod> -- <command>
+kubectl --namespace <namespace> exec --stdin --tty <pod> -- <command>
 
 # container logs
-kubectl logs --follow <pod> --container <container>
+kubectl --namespace <namespace> logs --follow <pod> --container <container>
 
 $ namespace: printf "Fetching namespaces..." >&2; kubectl get namespaces --- --column 1 --header-lines 1
 $ pod: printf "\nFetching pods..." >&2; kubectl get pods --- --column 1 --header-lines 1
