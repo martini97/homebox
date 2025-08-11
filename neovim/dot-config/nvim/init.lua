@@ -432,3 +432,30 @@ do -- conform
 
 	vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
 end
+
+do -- testing
+	vim.pack.add({ "https://github.com/vim-test/vim-test" })
+
+	local function with_env_ci(cmd)
+		return "CI=true " .. cmd
+	end
+
+	vim.g["test#strategy"] = "neovim_sticky"
+	vim.g["test#preserve_screen"] = 1
+	vim.g["test#neovim#start_normal"] = 1
+	vim.g["test#preserve_screen"] = 0
+	vim.g["test#neovim_sticky#kill_previous"] = 1
+	vim.g["test#neovim_sticky#reopen_window"] = 1
+	vim.g["test#neovim_sticky#use_existing"] = 1
+	vim.g["test#neovim#term_position"] = "hor botright 30"
+
+	vim.g["test#custom_transformations"] = { with_env_ci = with_env_ci }
+	vim.g["test#transformation"] = "with_env_ci"
+
+	vim.g["test#javascript#runner"] = "jest"
+	vim.g["test#javascript#jest#executable"] = "npm run test --"
+	vim.g["test#javascript#jest#options"] = "--no-coverage"
+
+	vim.keymap.set("n", "<leader>tt", vim.cmd.TestNearest, { desc = "[test] run nearest" })
+	vim.keymap.set("n", "<leader>tf", vim.cmd.TestFile, { desc = "[test] run file" })
+end
