@@ -3,3 +3,8 @@ finder:
 
 shell:
   command: bash
+
+cheats:
+  paths:
+    - ~/git/loadsmart/opendock-nova/cheats
+    - ~/.local/share/navi
