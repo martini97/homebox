@@ -139,11 +139,11 @@ vim.filetype.add({ extension = { beancount = "beancount", bean = "beancount", ch
 do -- lsp
 	vim.pack.add({
 		"https://github.com/mason-org/mason.nvim",
-		"https://github.com/neovim/nvim-lspconfig"
+		"https://github.com/neovim/nvim-lspconfig",
 	})
 
 	require("mason").setup()
-	local m_registry = require 'mason-registry'
+	local m_registry = require("mason-registry")
 
 	local function ensure_installed(name)
 		local pkg = m_registry.get_package(name)
@@ -153,12 +153,12 @@ do -- lsp
 		pkg:install()
 	end
 
-	ensure_installed('typescript-language-server')
-	ensure_installed('eslint-lsp')
-	ensure_installed('lua-language-server')
-	ensure_installed('json-lsp')
+	ensure_installed("typescript-language-server")
+	ensure_installed("eslint-lsp")
+	ensure_installed("lua-language-server")
+	ensure_installed("json-lsp")
 
-	vim.lsp.enable({ 'lua_ls', 'jsonls', 'ts_ls', 'eslint' })
+	vim.lsp.enable({ "lua_ls", "jsonls", "ts_ls", "eslint" })
 
 	local lsp_group = vim.api.nvim_create_augroup("UserLsp", { clear = true })
 	vim.api.nvim_create_autocmd("LspAttach", {
@@ -166,23 +166,23 @@ do -- lsp
 		callback = function(args)
 			local client = vim.lsp.get_client_by_id(args.data.client_id)
 			if not client then
-				vim.notify('invalid client', vim.log.levels.WARN)
+				vim.notify("invalid client", vim.log.levels.WARN)
 				return
 			end
 
 			vim.bo[args.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 
-			if client:supports_method('textDocument/formatting', args.buf) then
-				vim.api.nvim_create_autocmd('BufWritePre', {
-					group = lsp_group,
-					buffer = args.buf,
-					callback = function()
-						vim.lsp.buf.format({ bufnr = args.buf, id = client.id })
-					end
-				})
-			end
+			-- if client:supports_method("textDocument/formatting", args.buf) then
+			-- 	vim.api.nvim_create_autocmd("BufWritePre", {
+			-- 		group = lsp_group,
+			-- 		buffer = args.buf,
+			-- 		callback = function()
+			-- 			vim.lsp.buf.format({ bufnr = args.buf, id = client.id })
+			-- 		end,
+			-- 	})
+			-- end
 
-			if client:supports_method('textDocument/completion', args.buf) then
+			if client:supports_method("textDocument/completion", args.buf) then
 				vim.lsp.completion.enable(true, client.id, args.buf, {
 					autotrigger = true,
 					convert = function(item)
@@ -190,7 +190,7 @@ do -- lsp
 					end,
 				})
 			end
-		end
+		end,
 	})
 end
 
@@ -213,8 +213,8 @@ do -- fzf
 				["alt-h"] = fzf.actions.toggle_hidden,
 				["alt-f"] = fzf.actions.toggle_follow,
 				["enter"] = fzf.actions.file_edit_or_qf,
-			}
-		}
+			},
+		},
 	})
 	fzf.register_ui_select()
 	require("mini.icons").setup({})
@@ -282,7 +282,7 @@ do -- git
 		"https://github.com/ibhagwan/fzf-lua",
 		"https://github.com/linrongbin16/gitlinker.nvim",
 		"https://github.com/NeogitOrg/neogit",
-		"https://github.com/tpope/vim-fugitive"
+		"https://github.com/tpope/vim-fugitive",
 	})
 
 	require("gitlinker").setup()
@@ -301,7 +301,7 @@ do -- status
 		pattern = "*",
 		callback = function()
 			vim.wo.statusline = "%!v:lua.require'user.status'.active()"
-		end
+		end,
 	})
 
 	vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave" }, {
@@ -309,7 +309,7 @@ do -- status
 		pattern = "*",
 		callback = function()
 			vim.wo.statusline = "%!v:lua.require'user.status'.inactive()"
-		end
+		end,
 	})
 end
 
@@ -331,14 +331,14 @@ do -- findfunc
 			vim.notify("findfunc: failed to list files" .. result.stdout, vim.log.levels.ERROR)
 			return {}
 		end
-		local files = vim.split(result.stdout, '\n', { trimempty = true })
-		if vim.trim(cmdarg or '') == '' then
+		local files = vim.split(result.stdout, "\n", { trimempty = true })
+		if vim.trim(cmdarg or "") == "" then
 			return files
 		end
 		return vim.fn.matchfuzzy(files, cmdarg)
 	end
 
-	vim.opt.findfunc = 'v:lua.user_findfunc'
+	vim.opt.findfunc = "v:lua.user_findfunc"
 
 	vim.keymap.set("n", "<leader>ff", ":<c-u>find ", { desc = "find" })
 end
@@ -346,11 +346,11 @@ end
 do -- treesitter
 	vim.pack.add({
 		"https://github.com/nvim-treesitter/nvim-treesitter",
-		"https://github.com/nvim-treesitter/nvim-treesitter-context"
+		"https://github.com/nvim-treesitter/nvim-treesitter-context",
 	})
 
 	---@diagnostic disable-next-line: missing-fields
-	require('nvim-treesitter.configs').setup({
+	require("nvim-treesitter.configs").setup({
 		ensure_installed = {
 			"bash",
 			"c",
@@ -382,4 +382,53 @@ do -- treesitter
 		highlight = { enable = true, additional_vim_regex_highlighting = false },
 		indent = { enable = true },
 	})
+end
+
+do -- conform
+	vim.pack.add({ "https://github.com/stevearc/conform.nvim" })
+
+	local conform = require("conform")
+
+	---@param bufnr integer
+	---@param ... string
+	---@return string
+	local function first(bufnr, ...)
+		for i = 1, select("#", ...) do
+			local formatter = select(i, ...)
+			if conform.get_formatter_info(formatter, bufnr).available then
+				return formatter
+			end
+		end
+		return select(1, ...)
+	end
+
+	local function ecma_formatters(bufnr)
+		return { first(bufnr, "prettierd", "prettier"), first(bufnr, "eslint_d", "eslint") }
+	end
+
+	conform.setup({
+		log_level = vim.log.levels.TRACE,
+		notify_on_error = true,
+		notify_no_formatters = true,
+		format_on_save = { lsp_format = "fallback", timeout_ms = 750 },
+		formatters_by_ft = {
+			lua = { "stylua" },
+			sh = { "shfmt", "shellcheck" },
+			fish = { "fish_indent" },
+			bash = { "shfmt", "shellcheck" },
+			python = { "isort", "black" },
+			go = { "goimports", "golines", "gofmt" },
+			sql = { "sleek" },
+
+			javascript = ecma_formatters,
+			typescript = ecma_formatters,
+			javascriptreact = ecma_formatters,
+			typescriptreact = ecma_formatters,
+			["typescript.tsx"] = ecma_formatters,
+			["javascript.jsx"] = ecma_formatters,
+			vue = ecma_formatters,
+		},
+	})
+
+	vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
 end
