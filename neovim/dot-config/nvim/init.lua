@@ -46,11 +46,7 @@ vim.opt.hidden = true
 vim.opt.bufhidden = "hide"
 vim.opt.splitright = true
 vim.opt.splitbelow = true
-
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "v:lua.vim.lsp.foldexpr()"
-vim.opt.foldtext = ""
-vim.opt.foldcolumn = "auto"
+vim.opt.jumpoptions = "stack"
 
 vim.opt.winborder = "double"
 
@@ -99,6 +95,40 @@ vim.keymap.set("c", "<space>", function()
 end, { expr = true })
 
 vim.keymap.set("n", "<leader>wt", "<cmd>tab split<cr>", { desc = "[window] split to tab" })
+
+vim.keymap.set("n", "<leader><cr>", function()
+	local lines = vim.o.lines or 80
+	local height = math.ceil(lines / 3)
+	vim.cmd.split({ args = { "+terminal" }, range = { height }, mods = { horizontal = true, split = "botright" } })
+end, { desc = "open terminal" })
+
+vim.keymap.set("i", "<c-n>", function()
+	if tonumber(vim.fn.pumvisible()) ~= 0 then
+		return "<c-n>"
+	end
+	if next(vim.lsp.get_clients({ bufnr = 0 })) then
+		vim.lsp.completion.get()
+		return ""
+	end
+	if not vim.bo.omnifunc or vim.bo.omnifunc == "" then
+		return "<c-x><c-n>"
+	end
+	return "<c-x><c-o>"
+end, { desc = "next completion", expr = true })
+
+vim.keymap.set({ "i", "s" }, "<c-j>", function()
+	if vim.snippet.active({ direction = -1 }) then
+		return "<cmd>lua vim.snippet.jump(-1)<CR>"
+	end
+	return "<c-j>"
+end, { desc = "previous snippet tabstop", expr = true })
+
+vim.keymap.set({ "i", "s" }, "<c-k>", function()
+	if vim.snippet.active({ direction = 1 }) then
+		return "<cmd>lua vim.snippet.jump(1)<CR>"
+	end
+	return "<c-k>"
+end, { desc = "next snippet tabstop", expr = true })
 
 local yank_group = vim.api.nvim_create_augroup("UserHighlightYank", { clear = true })
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
@@ -240,6 +270,7 @@ do -- fzf
 	end
 
 	vim.keymap.set("n", "<leader>/", ":<c-u>FzfLua blines<cr>", { desc = "[fzf-lua] blines" })
+	vim.keymap.set("n", "grl", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", { desc = "[fzf-lua] workspace symbols" })
 end
 
 do -- oil
@@ -315,7 +346,7 @@ end
 
 do -- copilot
 	vim.pack.add({
-		{ src = "https://github.com/nvim-lua/plenary.nvim",         version = "master" },
+		{ src = "https://github.com/nvim-lua/plenary.nvim", version = "master" },
 		{ src = "https://github.com/zbirenbaum/copilot.lua" },
 		{ src = "https://github.com/CopilotC-Nvim/CopilotChat.nvim" },
 	})
@@ -458,4 +489,16 @@ do -- testing
 
 	vim.keymap.set("n", "<leader>tt", vim.cmd.TestNearest, { desc = "[test] run nearest" })
 	vim.keymap.set("n", "<leader>tf", vim.cmd.TestFile, { desc = "[test] run file" })
+	vim.keymap.set("n", "<leader>tl", vim.cmd.TestLast, { desc = "[test] run last" })
+end
+
+do -- folding
+	vim.opt.foldmethod = "expr"
+	vim.opt.foldexpr = "v:lua.vim.lsp.foldexpr()"
+	vim.opt.foldtext = ""
+	vim.opt.foldcolumn = "auto"
+	vim.opt.foldcolumn = "0"
+	vim.opt.foldlevel = 99
+	vim.opt.foldlevelstart = 1
+	vim.opt.foldnestmax = 6
 end
