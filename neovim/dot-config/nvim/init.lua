@@ -502,3 +502,37 @@ do -- folding
 	vim.opt.foldlevelstart = 1
 	vim.opt.foldnestmax = 6
 end
+
+do -- codecompanion
+	vim.pack.add({
+		{ src = "https://github.com/nvim-lua/plenary.nvim", version = "master" },
+		"https://github.com/nvim-treesitter/nvim-treesitter",
+		"https://github.com/olimorris/codecompanion.nvim",
+	})
+
+	require("codecompanion").setup()
+end
+
+local function get_path(type)
+	if type == "relative" then
+		return vim.fn.expand("%:~:.")
+	elseif type == "absolute" then
+		return vim.fn.expand("%:p")
+	end
+	error("unknown type")
+end
+
+vim.keymap.set("n", "<leader>fy", function()
+	vim.ui.select({ "relative", "absolute" }, {
+		prompt = "Pick path",
+		format_item = function(item)
+			return item .. " = " .. get_path(item)
+		end,
+	}, function(item)
+		if not item or item == "" then
+			return
+		end
+		local fpath = get_path(item)
+		vim.fn.setreg("+", fpath)
+	end)
+end, { desc = "find" })

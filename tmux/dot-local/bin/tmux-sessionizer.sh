@@ -21,7 +21,7 @@ tmux_switch() {
 
 tmux_has_session() {
   local session="$1"
-  tmux info &>/dev/null && tmux has-session -t "${session}" &>/dev/null
+  tmux has-session -t "${session}" &>/dev/null
 }
 
 tmux_hydrate() {
