@@ -372,6 +372,8 @@ do -- findfunc
 	vim.opt.findfunc = "v:lua.user_findfunc"
 
 	vim.keymap.set("n", "<leader>ff", ":<c-u>find ", { desc = "find" })
+	vim.keymap.set("n", "<leader>fs", ":<c-u>sfind ", { desc = "sfind" })
+	vim.keymap.set("n", "<leader>fv", ":<c-u>vertical sfind ", { desc = "vfind" })
 end
 
 do -- treesitter
