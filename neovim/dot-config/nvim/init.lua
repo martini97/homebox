@@ -273,6 +273,7 @@ do -- fzf
 
 	vim.keymap.set("n", "<leader>/", ":<c-u>FzfLua blines<cr>", { desc = "[fzf-lua] blines" })
 	vim.keymap.set("n", "grl", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", { desc = "[fzf-lua] workspace symbols" })
+	vim.keymap.set("n", "grd", "<cmd>FzfLua lsp_document_symbols<cr>", { desc = "[fzf-lua] document symbols" })
 end
 
 do -- oil
