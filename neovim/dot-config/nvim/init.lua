@@ -1,6 +1,7 @@
 vim.loader.enable()
 
-vim.opt.background = "light"
+vim.opt.background = "dark"
+vim.cmd.colorscheme({ "lunaperche" })
 
 vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0
@@ -41,6 +42,7 @@ vim.opt.wildoptions:append("fuzzy")
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 vim.opt.exrc = true
+vim.opt.secure = true
 vim.opt.mouse = ""
 vim.opt.hidden = true
 vim.opt.bufhidden = "hide"
@@ -387,6 +389,7 @@ do -- treesitter
 		ensure_installed = {
 			"bash",
 			"c",
+			"comment",
 			"diff",
 			"html",
 			"javascript",
@@ -538,3 +541,10 @@ vim.keymap.set("n", "<leader>fy", function()
 		vim.fn.setreg("+", fpath)
 	end)
 end, { desc = "find" })
+
+do -- shada
+	local root = assert(vim.uv.cwd())
+	local data_dir = vim.fn.stdpath("data")
+	local root_id = vim.fn.fnamemodify(root, ":t") .. "_" .. vim.fn.sha256(root):sub(1, 8) .. ".shada"
+	vim.opt.shadafile = vim.fs.joinpath(data_dir, "shada", root_id)
+end
