@@ -57,6 +57,11 @@ vim.opt.completeopt = { "noselect", "menuone", "popup", "fuzzy" }
 vim.opt.autocomplete = false
 vim.opt.pumheight = 10
 
+require("vim._extui").enable({
+	enable = true,
+	msg = { target = "cmd", timeout = 4000 },
+})
+
 if vim.fn.has("nvim-0.12") == 1 then
 	vim.opt.diffopt = { "internal", "filler", "closeoff", "inline:simple", "linematch:40" }
 elseif vim.fn.has("nvim-0.11") == 1 then
