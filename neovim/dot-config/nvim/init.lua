@@ -1,7 +1,7 @@
 vim.loader.enable()
 
 vim.opt.background = "dark"
-vim.cmd.colorscheme({ "lunaperche" })
+vim.cmd.colorscheme({ "unokai" })
 
 vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0
@@ -53,9 +53,15 @@ vim.opt.jumpoptions = "stack"
 vim.opt.winborder = "double"
 
 vim.opt.complete = { ".", "t", "o" }
-vim.opt.completeopt = { "menuone", "noselect", "popup", "fuzzy" }
+vim.opt.completeopt = { "noselect", "menuone", "popup", "fuzzy" }
 vim.opt.autocomplete = false
 vim.opt.pumheight = 10
+
+if vim.fn.has("nvim-0.12") == 1 then
+	vim.opt.diffopt = { "internal", "filler", "closeoff", "inline:simple", "linematch:40" }
+elseif vim.fn.has("nvim-0.11") == 1 then
+	vim.opt.diffopt = { "internal", "filler", "closeoff", "linematch:40" }
+end
 
 vim.diagnostic.config({ virtual_text = { current_line = true } })
 
@@ -326,6 +332,8 @@ do -- git
 	vim.keymap.set("n", "<leader>gg", function()
 		require("neogit").open({ kind = "floating" })
 	end, { desc = "[neogit] open" })
+
+	vim.keymap.set("n", "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", { desc = "[diffview] file history" })
 end
 
 do -- status
