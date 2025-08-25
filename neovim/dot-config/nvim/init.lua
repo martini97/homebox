@@ -205,8 +205,9 @@ do -- lsp
 	ensure_installed("eslint-lsp")
 	ensure_installed("lua-language-server")
 	ensure_installed("json-lsp")
+	ensure_installed("pyright")
 
-	vim.lsp.enable({ "lua_ls", "jsonls", "ts_ls", "eslint" })
+	vim.lsp.enable({ "lua_ls", "jsonls", "ts_ls", "eslint", "pyright" })
 
 	local lsp_group = vim.api.nvim_create_augroup("UserLsp", { clear = true })
 	vim.api.nvim_create_autocmd("LspAttach", {
