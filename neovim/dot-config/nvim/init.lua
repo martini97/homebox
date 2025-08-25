@@ -138,6 +138,16 @@ vim.keymap.set({ "i", "s" }, "<c-k>", function()
 	return "<c-k>"
 end, { desc = "next snippet tabstop", expr = true })
 
+vim.keymap.set("i", "<tab>", function()
+	if not vim.lsp.inline_completion.get() then
+		return "<tab>"
+	end
+end, { expr = true, replace_keycodes = true, desc = "accept suggestion" })
+
+vim.keymap.set("i", "<s-tab>", function()
+	vim.lsp.inline_completion.select()
+end, { desc = "cycle suggestion" })
+
 local yank_group = vim.api.nvim_create_augroup("UserHighlightYank", { clear = true })
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 	group = yank_group,
@@ -227,6 +237,10 @@ do -- lsp
 						return { abbr = item.label:gsub("%b()", "") }
 					end,
 				})
+			end
+
+			if client:supports_method("textDocument/inlineCompletion", args.buf) then
+				vim.lsp.inline_completion.enable(true)
 			end
 		end,
 	})
