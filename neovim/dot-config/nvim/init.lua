@@ -211,6 +211,8 @@ do -- lsp
 	ensure_installed("lua-language-server")
 	ensure_installed("json-lsp")
 	ensure_installed("pyright")
+	ensure_installed("prettierd")
+	ensure_installed("eslint_d")
 
 	vim.lsp.enable({ "lua_ls", "jsonls", "ts_ls", "eslint", "pyright" })
 
@@ -284,8 +286,7 @@ do -- fzf
 		b = "buffers",
 		k = "keymaps",
 		r = "resume",
-		o = "lsp_document_symbols",
-		O = "lsp_workspace_symbols",
+		o = "oldfiles",
 		["<space>"] = "builtin",
 		["."] = "oldfiles",
 	}
@@ -405,6 +406,7 @@ do -- findfunc
 	vim.keymap.set("n", "<leader>ff", ":<c-u>find ", { desc = "find" })
 	vim.keymap.set("n", "<leader>fs", ":<c-u>sfind ", { desc = "sfind" })
 	vim.keymap.set("n", "<leader>fv", ":<c-u>vertical sfind ", { desc = "vfind" })
+	vim.keymap.set("n", "<leader>ft", ":<c-u>tabfind ", { desc = "tabfind" })
 end
 
 do -- treesitter
@@ -576,4 +578,28 @@ do -- shada
 	local data_dir = vim.fn.stdpath("data")
 	local root_id = vim.fn.fnamemodify(root, ":t") .. "_" .. vim.fn.sha256(root):sub(1, 8) .. ".shada"
 	vim.opt.shadafile = vim.fs.joinpath(data_dir, "shada", root_id)
+end
+
+do -- abbreviations
+	local group = vim.api.nvim_create_augroup("UserAbbreviations", { clear = true })
+
+	vim.cmd.iabbrev({ args = { "<expr>", "dt@", [[strftime('%Y-%m-%d')]] } })
+
+	vim.api.nvim_create_autocmd({ "FileType" }, {
+		group = group,
+		desc = "JS abbreviations",
+		pattern = { "javascript", "typescript", "javascriptreact", "typescriptreact", "vue" },
+		callback = function()
+			vim.cmd.iabbrev({
+				args = {
+					"<buffer>",
+					"pp@",
+					[[<esc>bceconsole.debug(">>> <c-r>%:<c-r>=line('.')<cr> ::: <c-r>":::", <c-r>");]],
+				},
+			})
+			vim.cmd.iabbrev({
+				args = { "<buffer>", "ph@", [[console.debug(">>> <c-r>%:<c-r>=line('.')<cr> ::: here");]] },
+			})
+		end,
+	})
 end
