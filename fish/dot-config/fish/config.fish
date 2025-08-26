@@ -44,3 +44,5 @@ fish_add_compl -p "$brew_fishd/vendor_completions.d"
 fish_call_fn -f "/usr/share/fzf/shell/key-bindings.fish" fzf_key_bindings
 
 abbr --add !! --position anywhere --function _last_history_item
+abbr --add pdc --position command "podman compose"
+abbr --add pdu --position command "podman compose up --detach"

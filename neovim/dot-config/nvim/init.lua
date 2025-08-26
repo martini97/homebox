@@ -584,6 +584,10 @@ do -- abbreviations
 	local group = vim.api.nvim_create_augroup("UserAbbreviations", { clear = true })
 
 	vim.cmd.iabbrev({ args = { "<expr>", "dt@", [[strftime('%Y-%m-%d')]] } })
+	vim.cmd.iabbrev({ args = { "<expr>", "uuid@", [[ systemlist('uuidgen')[0] ]] } })
+	vim.cmd.iabbrev({
+		args = { "todo@", [[<c-r>=printf(&commentstring, 'TODO')<cr>(<c-r>=strftime('%Y-%m-%d')<cr>):]] },
+	})
 
 	vim.api.nvim_create_autocmd({ "FileType" }, {
 		group = group,
