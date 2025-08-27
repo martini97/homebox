@@ -59,10 +59,7 @@ vim.opt.completeopt = { "noselect", "menuone", "popup", "fuzzy" }
 vim.opt.autocomplete = false
 vim.opt.pumheight = 10
 
-require("vim._extui").enable({
-	enable = true,
-	msg = { target = "cmd", timeout = 4000 },
-})
+require("vim._extui").enable({ enable = true, msg = { target = "cmd", timeout = 4000 } })
 
 if vim.fn.has("nvim-0.12") == 1 then
 	vim.opt.diffopt = { "internal", "filler", "closeoff", "inline:simple", "linematch:40" }
@@ -257,10 +254,7 @@ do -- lsp
 end
 
 do -- fzf
-	vim.pack.add({
-		"https://github.com/echasnovski/mini.icons",
-		"https://github.com/ibhagwan/fzf-lua",
-	})
+	vim.pack.add({ "https://github.com/ibhagwan/fzf-lua" })
 
 	local fzf = require("fzf-lua")
 
@@ -279,7 +273,6 @@ do -- fzf
 		},
 	})
 	fzf.register_ui_select()
-	require("mini.icons").setup({})
 
 	local keymaps = {
 		-- NOTE: testing builtin find with custom findfunc
@@ -306,12 +299,7 @@ do -- fzf
 end
 
 do -- oil
-	vim.pack.add({
-		"https://github.com/echasnovski/mini.icons",
-		"https://github.com/stevearc/oil.nvim",
-	})
-
-	require("mini.icons").setup({})
+	vim.pack.add({ "https://github.com/stevearc/oil.nvim" })
 
 	local oil = require("oil")
 
@@ -327,7 +315,7 @@ do -- oil
 
 	oil.setup({
 		default_file_explorer = true,
-		columns = { "icon" },
+		columns = { "icon", "permissions", "size", "mtime" },
 		buf_options = { buflisted = false, bufhidden = "hide" },
 		keymaps = {
 			gq = "actions.close",
