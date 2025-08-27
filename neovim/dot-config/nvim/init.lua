@@ -388,6 +388,7 @@ do -- copilot
 end
 
 do -- findfunc
+	---@diagnostic disable-next-line: duplicate-set-field
 	function _G.user_findfunc(cmdarg)
 		local result = vim.system({ "fd", "--full-path", "--hidden", "--follow" }, { text = true }):wait()
 		if not result or result.code ~= 0 then
@@ -546,19 +547,20 @@ do -- codecompanion
 		"https://github.com/olimorris/codecompanion.nvim",
 	})
 
+	---@diagnostic disable-next-line: undefined-field
 	require("codecompanion").setup()
 end
 
-local function get_path(type)
-	if type == "relative" then
-		return vim.fn.expand("%:~:.")
-	elseif type == "absolute" then
-		return vim.fn.expand("%:p")
-	end
-	error("unknown type")
-end
-
 vim.keymap.set("n", "<leader>fy", function()
+	local function get_path(type)
+		if type == "relative" then
+			return vim.fn.expand("%:~:.")
+		elseif type == "absolute" then
+			return vim.fn.expand("%:p")
+		end
+		error("unknown type")
+	end
+
 	vim.ui.select({ "relative", "absolute" }, {
 		prompt = "Pick path",
 		format_item = function(item)
@@ -581,29 +583,21 @@ do -- shada
 end
 
 do -- abbreviations
-	local group = vim.api.nvim_create_augroup("UserAbbreviations", { clear = true })
-
 	vim.cmd.iabbrev({ args = { "<expr>", "dt@", [[strftime('%Y-%m-%d')]] } })
 	vim.cmd.iabbrev({ args = { "<expr>", "uuid@", [[ systemlist('uuidgen')[0] ]] } })
 	vim.cmd.iabbrev({
 		args = { "todo@", [[<c-r>=printf(&commentstring, 'TODO')<cr>(<c-r>=strftime('%Y-%m-%d')<cr>):]] },
 	})
+end
 
-	vim.api.nvim_create_autocmd({ "FileType" }, {
-		group = group,
-		desc = "JS abbreviations",
-		pattern = { "javascript", "typescript", "javascriptreact", "typescriptreact", "vue" },
-		callback = function()
-			vim.cmd.iabbrev({
-				args = {
-					"<buffer>",
-					"pp@",
-					[[<esc>bceconsole.debug(">>> <c-r>%:<c-r>=line('.')<cr> ::: <c-r>":::", <c-r>");]],
-				},
-			})
-			vim.cmd.iabbrev({
-				args = { "<buffer>", "ph@", [[console.debug(">>> <c-r>%:<c-r>=line('.')<cr> ::: here");]] },
-			})
-		end,
+do -- dadbod
+	vim.pack.add({
+		"https://github.com/tpope/vim-dadbod",
+		"https://github.com/kristijanhusak/vim-dadbod-ui",
+		"https://github.com/kristijanhusak/vim-dadbod-completion",
 	})
+
+	vim.g.dbs = {
+		{ name = "nova-dev", url = "postgres://novadb:novadbareyoukiddingme@127.0.0.1:5432/nova" },
+	}
 end
