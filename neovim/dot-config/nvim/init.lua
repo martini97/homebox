@@ -1,5 +1,7 @@
 vim.loader.enable()
 
+local utils = require("user.utils")
+
 vim.opt.background = "dark"
 vim.cmd.colorscheme({ "unokai" })
 
@@ -282,8 +284,8 @@ do -- fzf
 	local keymaps = {
 		-- NOTE: testing builtin find with custom findfunc
 		-- f = "files",
-		h = "helptags",
-		b = "buffers",
+		-- h = "helptags",
+		-- b = "buffers",
 		k = "keymaps",
 		r = "resume",
 		o = "oldfiles",
@@ -402,12 +404,36 @@ do -- findfunc
 		return vim.fn.matchfuzzy(files, cmdarg)
 	end
 
+	vim.api.nvim_create_autocmd({ "CmdlineChanged" }, {
+		group = vim.api.nvim_create_augroup("UserCmdlineAutocomp", { clear = true }),
+		callback = utils.debounce(
+			vim.schedule_wrap(utils.with_opts(function()
+				if vim.fn.getcmdtype() ~= ":" then
+					return
+				end
+				local ok, cmd = pcall(vim.api.nvim_parse_cmd, vim.fn.getcmdline(), {})
+				if not ok then
+					vim.notify_once("cmdlinechanged: failed to parse cmdline, err: " .. cmd, vim.log.levels.ERROR)
+					return
+				end
+				local wildtrigger_cmds = { "find", "sfind", "tabfind", "help", "buffer" }
+				if not vim.list_contains(wildtrigger_cmds, cmd.cmd) then
+					return
+				end
+				vim.fn.wildtrigger()
+			end, { wildmode = { "noselect:lastused", "full" } })),
+			500
+		),
+	})
+
 	vim.opt.findfunc = "v:lua.user_findfunc"
 
 	vim.keymap.set("n", "<leader>ff", ":<c-u>find ", { desc = "find" })
 	vim.keymap.set("n", "<leader>fs", ":<c-u>sfind ", { desc = "sfind" })
 	vim.keymap.set("n", "<leader>fv", ":<c-u>vertical sfind ", { desc = "vfind" })
 	vim.keymap.set("n", "<leader>ft", ":<c-u>tabfind ", { desc = "tabfind" })
+	vim.keymap.set("n", "<leader>fh", ":<c-u>help ", { desc = "help" })
+	vim.keymap.set("n", "<leader>fb", ":<c-u>buffer ", { desc = "buffer" })
 end
 
 do -- treesitter
