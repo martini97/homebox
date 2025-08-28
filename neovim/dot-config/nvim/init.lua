@@ -562,7 +562,33 @@ do -- codecompanion
 	})
 
 	---@diagnostic disable-next-line: undefined-field
-	require("codecompanion").setup()
+	require("codecompanion").setup({
+		adapters = {
+			acp = {
+				gemini_cli = function()
+					return require("codecompanion.adapters").extend("gemini_cli", {
+						env = { GEMINI_API_KEY = "cmd:bw get password 1fbe10a8-f629-4460-9da1-b2cd0113a325" },
+					})
+				end,
+			},
+			http = {
+				gemini = function()
+					return require("codecompanion.adapters").extend("gemini", {
+						env = {
+							GEMINI_API_KEY = "cmd:bw get password 1fbe10a8-f629-4460-9da1-b2cd0113a325",
+							api_key = "cmd:bw get password 1fbe10a8-f629-4460-9da1-b2cd0113a325",
+						},
+						commands = { default = { "gemini", "--experimental-acp" } },
+					})
+				end,
+			},
+		},
+		strategies = {
+			chat = {
+				adapter = { name = "copilot", model = "gpt-4.1" },
+			},
+		},
+	})
 end
 
 vim.keymap.set("n", "<leader>fy", function()
