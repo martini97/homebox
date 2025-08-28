@@ -23,9 +23,9 @@ end
 alias ll="eza -lh --group-directories-first --git --git-repos"
 alias la="eza -lhA --group-directories-first --git --git-repos"
 
-if test -f "$XDG_DATA_HOME/secrets.env"
-    envsource "$XDG_DATA_HOME/secrets.env"
-end
+# if test -f "$XDG_DATA_HOME/secrets.env"
+#     envsource "$XDG_DATA_HOME/secrets.env"
+# end
 
 alias hb="homebox"
 
