@@ -99,6 +99,7 @@ vim.keymap.set("c", "<c-f>", "<right>", { desc = "[emacs] right" })
 vim.keymap.set("c", "<c-k>", "<C-f>D<C-c><C-c>:<Up>", { desc = "[emacs] kill to the end of line" })
 vim.keymap.set("c", "<m-b>", "<c-left>", { desc = "[emacs] wordwise left" })
 vim.keymap.set("c", "<m-f>", "<c-right>", { desc = "[emacs] wordwise right" })
+vim.keymap.set("c", "<m-e>", "<home><c-right><c-w>", { desc = "edit cmdline cmd" })
 
 vim.keymap.set("c", "<space>", function()
 	local mode = vim.fn.getcmdtype() or ""
