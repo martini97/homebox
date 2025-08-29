@@ -705,6 +705,9 @@ do -- sessions
 		if not vim.uv.fs_stat(session) then
 			return
 		end
+		if vim.fn.argc() > 0 then
+			return
+		end
 		-- TODO(2025-08-28): this needs to be inside schedule to avoid breaking treesitter
 		vim.schedule(function()
 			vim.cmd.source({ args = { session } })
