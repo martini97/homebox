@@ -695,12 +695,26 @@ do -- sessions
 	end
 
 	local function save_session()
+		-- TODO(2025-09-01): don't save session when committing
+		local bufnr = vim.api.nvim_get_current_buf()
+		local bufname = vim.api.nvim_buf_get_name(bufnr)
+		if vim.fs.basename(bufname or "") == "COMMIT_EDITMSG" then
+			return
+		end
+
 		local session = get_current_session_file()
 		vim.cmd.mksession({ args = { session }, bang = true })
 		vim.notify("save session: " .. session, vim.log.levels.INFO)
 	end
 
 	local function load_session()
+		-- FIX(2025-09-01): fix man pager loading session
+		local bufnr = vim.api.nvim_get_current_buf()
+		local bufname = vim.api.nvim_buf_get_name(bufnr)
+		if bufname and bufname ~= "" then
+			return
+		end
+
 		local session = get_current_session_file()
 		if not vim.uv.fs_stat(session) then
 			return
