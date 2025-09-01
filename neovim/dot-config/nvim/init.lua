@@ -216,33 +216,6 @@ do -- lsp
 
 	vim.lsp.enable({ "lua_ls", "jsonls", "ts_ls", "eslint", "pyright" })
 
-	---@param client vim.lsp.Client
-	---@param bufnr number
-	local function ts_ls_goto_source_definition(client, bufnr)
-		return function()
-			local position = vim.lsp.util.make_position_params(0, client.offset_encoding).position
-			client:exec_cmd({
-				title = "go_to_source_definition",
-				command = "_typescript.goToSourceDefinition",
-				arguments = { vim.api.nvim_buf_get_name(0), position },
-			}, {}, function(err, result)
-				if err ~= nil then
-					vim.log.error(err)
-				end
-				if #result < 1 then
-					vim.notify("source not found", vim.log.levels.WARN)
-				elseif #result == 1 then
-					vim.lsp.util.show_document(result[1], "utf-8")
-				else
-					local items = vim.lsp.util.locations_to_items(result, client.offset_encoding)
-					vim.schedule(function()
-						vim.fn.setqflist(items)
-					end)
-				end
-			end)
-		end
-	end
-
 	local lsp_group = vim.api.nvim_create_augroup("UserLsp", { clear = true })
 	vim.api.nvim_create_autocmd("LspAttach", {
 		group = lsp_group,
@@ -254,25 +227,6 @@ do -- lsp
 			end
 
 			vim.bo[args.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
-
-			if client.name == "ts_ls" then
-				vim.keymap.set(
-					"n",
-					"gri",
-					ts_ls_goto_source_definition(client, args.buf),
-					{ desc = "[lsp] goto source definition", buffer = args.buf }
-				)
-			end
-
-			-- if client:supports_method("textDocument/formatting", args.buf) then
-			-- 	vim.api.nvim_create_autocmd("BufWritePre", {
-			-- 		group = lsp_group,
-			-- 		buffer = args.buf,
-			-- 		callback = function()
-			-- 			vim.lsp.buf.format({ bufnr = args.buf, id = client.id })
-			-- 		end,
-			-- 	})
-			-- end
 
 			if client:supports_method("textDocument/completion", args.buf) then
 				vim.lsp.completion.enable(true, client.id, args.buf, {
