@@ -9,6 +9,8 @@ set -gx XDG_DATA_HOME "$HOME/.local/share"
 set -gx XDG_BIN_HOME "$HOME/.local/bin"
 set -gx XDG_STATE_HOME "$HOME/.local/state"
 
+set -gx MANPAGER "nvim +Man!"
+
 fish_add_path "$XDG_BIN_HOME"
 fish_add_path "$HOME/.cargo/bin"
 fish_add_path "$HOME/go/bin"
