@@ -9,7 +9,7 @@ statefile: state.pickle
 
 # --------------- Plugins ---------------
 
-plugins: ["fetchart"]
+plugins: ["fetchart", "convert"]
 pluginpath: []
 
 # --------------- Import ---------------
