@@ -9,6 +9,15 @@ set -gx XDG_DATA_HOME "$HOME/.local/share"
 set -gx XDG_BIN_HOME "$HOME/.local/bin"
 set -gx XDG_STATE_HOME "$HOME/.local/state"
 
+set -gx XDG_DESKTOP_DIR "$HOME/Desktop"
+set -gx XDG_DOWNLOAD_DIR "$HOME/Downloads"
+set -gx XDG_TEMPLATES_DIR "$HOME/Templates"
+set -gx XDG_PUBLICSHARE_DIR "$HOME/Public"
+set -gx XDG_DOCUMENTS_DIR "$HOME/Documents"
+set -gx XDG_MUSIC_DIR "$HOME/Music"
+set -gx XDG_PICTURES_DIR "$HOME/Pictures"
+set -gx XDG_VIDEOS_DIR "$HOME/Videos"
+
 set -gx MANPAGER "nvim +Man!"
 
 fish_add_path "$XDG_BIN_HOME"

@@ -267,10 +267,9 @@ do -- fzf
 	fzf.register_ui_select()
 
 	local keymaps = {
-		-- NOTE: testing builtin find with custom findfunc
-		-- f = "files",
-		-- h = "helptags",
-		-- b = "buffers",
+		f = "files",
+		h = "helptags",
+		b = "buffers",
 		k = "keymaps",
 		r = "resume",
 		o = "oldfiles",
@@ -401,19 +400,19 @@ do -- findfunc
 					return
 				end
 				vim.fn.wildtrigger()
-			end, { wildmode = { "noselect:lastused", "full" } })),
-			500
+			end, { wildmode = { "noselect" } })),
+			750
 		),
 	})
 
 	vim.opt.findfunc = "v:lua.user_findfunc"
 
-	vim.keymap.set("n", "<leader>ff", ":<c-u>find ", { desc = "find" })
+	-- vim.keymap.set("n", "<leader>ff", ":<c-u>find ", { desc = "find" })
 	vim.keymap.set("n", "<leader>fs", ":<c-u>sfind ", { desc = "sfind" })
 	vim.keymap.set("n", "<leader>fv", ":<c-u>vertical sfind ", { desc = "vfind" })
 	vim.keymap.set("n", "<leader>ft", ":<c-u>tabfind ", { desc = "tabfind" })
-	vim.keymap.set("n", "<leader>fh", ":<c-u>help ", { desc = "help" })
-	vim.keymap.set("n", "<leader>fb", ":<c-u>buffer ", { desc = "buffer" })
+	-- vim.keymap.set("n", "<leader>fh", ":<c-u>help ", { desc = "help" })
+	-- vim.keymap.set("n", "<leader>fb", ":<c-u>buffer ", { desc = "buffer" })
 end
 
 do -- treesitter
