@@ -7,6 +7,7 @@
   st = status
   ll = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
   cm = commit --gpg-sign --signoff
+  cb = "!git branch --all --sort=committerdate | grep -v '^[*+]' | awk '{print $1}' | fzf --exit-0 --preview 'git show --color=always {-1}' | sed 's/remotes\\/origin\\///g' | xargs -r git checkout"
 
 [core]
   editor = nvim
@@ -16,7 +17,7 @@
   defaultBranch = "main"
 
 [pull]
-  rebase = true
+  ; rebase = true
 
 [push]
   default = current
@@ -25,10 +26,13 @@
   instructionFormat = (%an <%ae>) %s
 
 [merge]
-  tool = "nvimdiff"
+  tool = "nvim"
 
 [mergetool]
   prompt = false
+
+[mergetool "nvim"]
+  cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
 
 [commit]
   verbose = true
